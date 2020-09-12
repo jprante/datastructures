@@ -1,0 +1,13 @@
+
+This implementation is a subset and simplified version of
+
+https://github.com/intelie/tinymap
+
+(master branch, as of 2020-09-12, Apache 2.0 license)
+
+- Serialization removed
+- Object reuse removed
+- no TinyList
+- no JSON parser
+- Builder classes moved to internal classes
+- multi map added
