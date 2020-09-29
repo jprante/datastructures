@@ -31,4 +31,9 @@ public abstract class IndexedSetBase<T> extends IndexedCollectionBase<T> impleme
         }
         return hash;
     }
+
+    @Override
+    public int compareTo(IndexedSet<T> indexedSet) {
+        return Integer.compare(hashCode(), indexedSet.hashCode());
+    }
 }

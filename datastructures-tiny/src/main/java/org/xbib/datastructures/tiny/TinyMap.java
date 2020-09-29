@@ -41,7 +41,9 @@ public abstract class TinyMap<K, V> extends IndexedMapBase<K, V>  {
         }
     };
 
-    public static class Builder<K, V> extends IndexedMapBase<K, V> {
+    public static class Builder<K, V>
+            extends IndexedMapBase<K, V>
+            implements Comparable<Builder<K, V>> {
 
         private final TinySet.Builder<K> keys;
 
@@ -154,6 +156,32 @@ public abstract class TinyMap<K, V> extends IndexedMapBase<K, V>  {
         public void clear() {
             Arrays.fill(values, 0, keys.rawSize(), null);
             keys.clear();
+        }
+
+        @Override
+        public int hashCode() {
+            return keys.hashCode() ^ Arrays.hashCode(values);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof Builder)) {
+                return false;
+            }
+            Builder<K, V> other = (Builder<K, V>) obj;
+            if (!keySet().equals(other.keySet())) {
+                return false;
+            }
+            return Arrays.equals(values, other.values);
+        }
+
+        @Override
+        public int compareTo(Builder<K, V> o) {
+            return keySet().compareTo(o.keySet());
         }
     }
 

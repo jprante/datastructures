@@ -5,13 +5,16 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import java.util.AbstractMap;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -157,6 +160,64 @@ public class TinyMapTest {
         }
         TinyMap<String, Object> map = builder.build();
         assertEquals(99999, map.get("aaa99999"));
+    }
+
+    @Test
+    public void testCompareKeys() {
+        TinyMap.Builder<String, Object> builder1 = TinyMap.builder();
+        for (int i = 0; i < 100; i++) {
+            builder1.put("" + i, i);
+        }
+        TinyMap.Builder<String, Object> builder2 = TinyMap.builder();
+        for (int i = 0; i < 100; i++) {
+            builder2.put("" + i, i);
+        }
+        assertEquals(0,  builder1.keySet().compareTo(builder2.keySet()));
+    }
+
+    @Test
+    public void testCompareBuilder() {
+        TinyMap.Builder<String, Object> builder1 = TinyMap.builder();
+        for (int i = 0; i < 100; i++) {
+            builder1.put("" + i, i);
+        }
+        TinyMap.Builder<String, Object> builder2 = TinyMap.builder();
+        for (int i = 0; i < 100; i++) {
+            builder2.put("" + i, i);
+        }
+        assertEquals(0,  builder1.compareTo(builder2));
+    }
+
+    @Test
+    public void testFailCompareBuilder() {
+        TinyMap.Builder<String, Object> builder1 = TinyMap.builder();
+        for (int i = 0; i < 100; i++) {
+            builder1.put("" + i, i);
+        }
+        TinyMap.Builder<String, Object> builder2 = TinyMap.builder();
+        for (int i = 0; i < 101; i++) {
+            builder2.put("" + i, i);
+        }
+        assertNotEquals(0,  builder1.compareTo(builder2));
+    }
+
+    @Test
+    public void testSortKeys() {
+        TinyMap.Builder<String, Object> builder = TinyMap.builder();
+        for (int i = 0; i < 100; i++) {
+            builder.put("" + i, i);
+        }
+        assertEquals(100, builder.keySet().stream().sorted().count());
+    }
+
+    @Test
+    public void testSortEntries() {
+        TinyMap.Builder<String, Object> builder = TinyMap.builder();
+        for (int i = 0; i < 100; i++) {
+            builder.put("" + i, i);
+        }
+        Set<Map.Entry<String, Object>> set = new HashSet<>(builder.entrySet());
+        assertEquals(100, set.size());
     }
 
     private void testCount(int count, boolean withNull) {

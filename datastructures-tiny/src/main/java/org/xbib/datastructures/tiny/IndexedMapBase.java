@@ -174,7 +174,8 @@ public abstract class IndexedMapBase<K, V> implements IndexedMap<K, V> {
         return sb.append('}').toString();
     }
 
-    private class ValuesView extends IndexedCollectionBase<V> implements IndexedCollectionBase.NoAdditiveChange<V> {
+    private class ValuesView extends IndexedCollectionBase<V>
+            implements IndexedCollectionBase.NoAdditiveChange<V> {
 
         @Override
         public V getEntryAt(int index) {
@@ -208,7 +209,8 @@ public abstract class IndexedMapBase<K, V> implements IndexedMap<K, V> {
         }
     }
 
-    private class KeysView extends IndexedSetBase<K> implements IndexedCollectionBase.NoAdditiveChange<K> {
+    private class KeysView extends IndexedSetBase<K>
+            implements IndexedCollectionBase.NoAdditiveChange<K> {
 
         @Override
         public int getIndex(Object key) {
@@ -247,7 +249,8 @@ public abstract class IndexedMapBase<K, V> implements IndexedMap<K, V> {
         }
     }
 
-    private class EntriesView extends IndexedSetBase<Map.Entry<K, V>> implements IndexedCollectionBase.NoAdditiveChange<Map.Entry<K, V>> {
+    private class EntriesView extends IndexedSetBase<Map.Entry<K, V>>
+            implements IndexedCollectionBase.NoAdditiveChange<Map.Entry<K, V>> {
 
         @Override
         public int getIndex(Object key) {
