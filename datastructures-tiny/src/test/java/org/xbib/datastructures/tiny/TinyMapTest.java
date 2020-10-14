@@ -220,6 +220,14 @@ public class TinyMapTest {
         assertEquals(100, set.size());
     }
 
+    @Test
+    public void testPutAllNull() {
+        TinyMap.Builder<String, Object> builder = TinyMap.builder();
+        builder.put("a", "b");
+        builder.putAll(null);
+        assertEquals(1, builder.build().size());
+    }
+
     private void testCount(int count, boolean withNull) {
         TinyMap.Builder<String, Object> builder = TinyMap.builder();
         LinkedHashMap<String, Object> expectedMap = new LinkedHashMap<>();

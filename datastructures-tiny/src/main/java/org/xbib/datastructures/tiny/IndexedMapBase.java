@@ -112,6 +112,9 @@ public abstract class IndexedMapBase<K, V> implements IndexedMap<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
+        if (m == null) {
+            return;
+        }
         m.forEach(this::put);
     }
 

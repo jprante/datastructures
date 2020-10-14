@@ -45,6 +45,9 @@ public abstract class IndexedCollectionBase<T> extends AbstractCollection<T> imp
 
     @Override
     public void forEach(Consumer<? super T> action) {
+        if (action == null) {
+            return;
+        }
         for (int i = 0; i < rawSize(); i++) {
             if (!isRemoved(i)) {
                 action.accept(getEntryAt(i));
