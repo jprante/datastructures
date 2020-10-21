@@ -36,9 +36,9 @@ artifacts {
     archives sourcesJar, javadocJar
 }
 
-tasks.withType(JavaCompile) {
-    options.compilerArgs << '-Xlint:all,-exports'
-}
+//tasks.withType(JavaCompile) {
+//    options.compilerArgs << '-Xlint:all'
+//}
 
 javadoc {
     options.addStringOption('Xdoclint:none', '-quiet')
