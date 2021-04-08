@@ -19,12 +19,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.Throughput)
-@Warmup(iterations = 10)
+@Warmup(iterations = 5)
 @Fork(value = 1)
-@Measurement(iterations = 10)
+@Measurement(iterations = 5)
 public class MapAdditionTest {
 
-    private static final int COLLECTION_SIZE = 1_000_000;
+    private static final int COLLECTION_SIZE = 1_000;
 
     @Benchmark
     public Map<Long, String> hashMap() {

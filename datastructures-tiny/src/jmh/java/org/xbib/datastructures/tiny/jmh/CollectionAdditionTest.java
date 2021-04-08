@@ -20,12 +20,12 @@ import java.util.TreeSet;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.Throughput)
-@Warmup(iterations = 10)
+@Warmup(iterations = 5)
 @Fork(1)
-@Measurement(iterations = 10)
+@Measurement(iterations = 5)
 public class CollectionAdditionTest {
 
-    private static final int COLLECTION_SIZE = 1_000_000;
+    private static final int COLLECTION_SIZE = 1_000;
 
     @Benchmark
     public List<Integer> arrayList() {

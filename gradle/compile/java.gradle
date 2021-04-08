@@ -17,9 +17,7 @@ compileTestJava {
 
 jar {
     manifest {
-        attributes('Implementation-Title': project.name)
         attributes('Implementation-Version': project.version)
-        attributes('Implementation-Vendor': 'Jörg Prante')
     }
 }
 
@@ -36,9 +34,10 @@ artifacts {
     archives sourcesJar, javadocJar
 }
 
-//tasks.withType(JavaCompile) {
-//    options.compilerArgs << '-Xlint:all'
-//}
+tasks.withType(JavaCompile) {
+  // commented out mostly because of jmh generated code
+  //  options.compilerArgs << '-Xlint:all'
+}
 
 javadoc {
     options.addStringOption('Xdoclint:none', '-quiet')

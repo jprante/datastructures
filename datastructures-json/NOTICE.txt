@@ -1,0 +1,11 @@
+
+This implementation is a subset and simplified version of
+
+https://github.com/intelie/tinymap/tree/master/src/main/java/net/intelie/tinymap/json
+
+(master branch, as of 2021-02-01, Apache 2.0 license)
+
+- Serialization removed
+- Object cache removed
+- Builder classes moved to internal classes
+- test code simplified for JUnit Jupiter

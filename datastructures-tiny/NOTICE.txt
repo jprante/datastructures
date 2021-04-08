@@ -7,7 +7,6 @@ https://github.com/intelie/tinymap
 
 - Serialization removed
 - Object reuse removed
-- no TinyList
-- no JSON parser
 - Builder classes moved to internal classes
 - multi map added
+- JSON parser moved to datatstructures-json-tiny

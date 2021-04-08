@@ -4,14 +4,23 @@ import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.number.OrderingComparison.lessThan;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class TinySetTest {
+
+    @Test
+    public void testSimple() {
+        TinySet.Builder<Object> builder = TinySet.builder();
+        builder.add("a");
+        builder.add("b");
+        builder.add("c");
+        assertEquals("[a, b, c]", builder.build().toString());
+    }
 
     @Test
     public void testBuildAndGet() {
@@ -98,7 +107,7 @@ public class TinySetTest {
         testCount(123, true);
     }
 
-    private void testCount(int count, boolean withNull) throws Exception {
+    private void testCount(int count, boolean withNull) {
         TinySet.Builder<String> builder = TinySet.builder();
         LinkedHashSet<String> expectedSet = new LinkedHashSet<>();
         for (int i = 0; i < count; i++) {

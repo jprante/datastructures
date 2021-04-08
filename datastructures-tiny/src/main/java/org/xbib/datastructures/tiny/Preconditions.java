@@ -2,23 +2,15 @@ package org.xbib.datastructures.tiny;
 
 public abstract class Preconditions {
 
-    public static void checkArgument(boolean expression, Object errorMessage) {
+    public static void checkArgument(boolean expression, String errorMessage) {
         if (!expression) {
-            throw new IllegalArgumentException(String.valueOf(errorMessage));
+            throw new IllegalArgumentException(errorMessage);
         }
     }
 
-    public static void checkArgument(boolean expression,
-                                     String errorMessageTemplate,
-                                     Object... errorMessageArgs) {
+    public static void checkState(boolean expression, String errorMessage) {
         if (!expression) {
-            throw new IllegalArgumentException(format(errorMessageTemplate, errorMessageArgs));
-        }
-    }
-
-    public static void checkState(boolean expression, Object errorMessage) {
-        if (!expression) {
-            throw new IllegalStateException(String.valueOf(errorMessage));
+            throw new IllegalStateException(errorMessage);
         }
     }
 
@@ -38,7 +30,7 @@ public abstract class Preconditions {
         }
     }
 
-    public static String format(String template, Object... args) {
+    private static String format(String template, Object... args) {
         template = String.valueOf(template);
         StringBuilder builder = new StringBuilder(template.length() + 16 * args.length);
         int templateStart = 0;

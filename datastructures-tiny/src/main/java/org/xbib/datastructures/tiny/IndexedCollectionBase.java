@@ -109,7 +109,7 @@ public abstract class IndexedCollectionBase<T> extends AbstractCollection<T> imp
         private int next;
         private int prev;
 
-        public CollectionIterator(int fromIndex) {
+        private CollectionIterator(int fromIndex) {
             this.current = -1;
             this.next = findNext(fromIndex);
             this.prev = findPrev(fromIndex - 1);

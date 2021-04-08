@@ -76,10 +76,7 @@ public abstract class TinyMap<K, V> extends IndexedMapBase<K, V>  {
             };
         }
 
-        public void compact() {
-            keys.compact();
-        }
-
+        @Override
         public V put(K key, V value) {
             int index = keys.addOrGetIndex(key);
             if (index >= 0) {
@@ -142,16 +139,6 @@ public abstract class TinyMap<K, V> extends IndexedMapBase<K, V>  {
             return keys.rawSize();
         }
 
-        public TinyMap<K, V> build() {
-            return buildWithKeys(this.keys.build());
-        }
-
-        public TinyMap<K, V> buildWithKeys(TinySet<K> keys) {
-            compact();
-            Preconditions.checkArgument(keys.size() == size(), "Must have same size");
-            return new SizeAny<>(keys, Arrays.copyOf(values, keys.size()));
-        }
-
         @Override
         public void clear() {
             Arrays.fill(values, 0, keys.rawSize(), null);
@@ -183,15 +170,31 @@ public abstract class TinyMap<K, V> extends IndexedMapBase<K, V>  {
         public int compareTo(Builder<K, V> o) {
             return keySet().compareTo(o.keySet());
         }
+
+        public TinyMap<K, V> buildWithKeys(TinySet<K> keys) {
+            compact();
+            Preconditions.checkArgument(keys.size() == size(),
+                    "Must have same size");
+            return new SizeAny<>(keys, Arrays.copyOf(values, keys.size()));
+        }
+
+        public void compact() {
+            keys.compact();
+        }
+
+        public TinyMap<K, V> build() {
+            return buildWithKeys(this.keys.build());
+        }
     }
 
     public static class SizeAny<K, V> extends TinyMap<K, V> {
 
-        public final Object[] values;
+        private final Object[] values;
 
         public SizeAny(TinySet<K> keys, Object[] values) {
             super(keys);
-            Preconditions.checkArgument(keys.size() == values.length, "keys and values must have same size");
+            Preconditions.checkArgument(keys.size() == values.length,
+                    "keys and values must have same size");
             this.values = values;
         }
 

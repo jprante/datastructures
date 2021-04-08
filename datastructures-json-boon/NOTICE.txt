@@ -1,0 +1,5 @@
+This work is a derived work of
+
+https://github.com/boonproject/boon/tree/master/boon/src/main/java/org/boon/json
+
+Apache License 2.0, master branch, as of 2021-02-01

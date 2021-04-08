@@ -14,23 +14,13 @@ public abstract class TinySet<T> extends IndexedSetBase<T> {
         return key == null ? 0 : (h = key.hashCode() * 0x85ebca6b) ^ h >>> 16;
     }
 
-    public static <T> TinySet<T> createUnsafe(Object[] keys) {
-        if (keys.length == 0) {
-            return new Empty<>();
-        } else if (keys.length < 0xFF) {
-            return new Small<>(keys);
-        } else if (keys.length < 0xFFFF) {
-            return new Medium<>(keys);
-        } else {
-            return new Large<>(keys);
-        }
-    }
-
     public static <T> Builder<T> builder() {
         return new Builder<>();
     }
 
-    public static class Empty<T> extends TinySet<T> implements Immutable<T> {
+    public static class Empty<T>
+            extends TinySet<T>
+            implements Immutable<T> {
 
         @Override
         public int getIndex(Object key) {
@@ -48,7 +38,9 @@ public abstract class TinySet<T> extends IndexedSetBase<T> {
         }
     }
 
-    private static abstract class ArrayTableSet<T, A> extends TinySet<T> implements Immutable<T> {
+    private static abstract class ArrayTableSet<T, A>
+            extends TinySet<T>
+            implements Immutable<T> {
 
         protected final Object[] keys;
 
@@ -60,7 +52,8 @@ public abstract class TinySet<T> extends IndexedSetBase<T> {
             for (int j = 0; j < keys.length; j++) {
                 Object key = keys[j];
                 int hash = ~getIndex(key);
-                Preconditions.checkArgument(hash >= 0, "duplicate key: %s", key);
+                Preconditions.checkArgument(hash >= 0,
+                        "duplicate key: " + key);
                 tableSet(table, hash, j);
             }
         }
@@ -105,7 +98,8 @@ public abstract class TinySet<T> extends IndexedSetBase<T> {
             int mask = table.length - 1;
             int hash = hash(key) & mask;
             int collisions = 0;
-            for (int i = table[hash] & 0xFF; i < 0xFF; i = table[hash = (hash + ++collisions) & mask] & 0xFF) {
+            for (int i = table[hash] & 0xFF; i < 0xFF;
+                 i = table[hash = (hash + ++collisions) & mask] & 0xFF) {
                 if (Objects.equals(key, keys[i])) {
                     return i;
                 }
@@ -138,7 +132,8 @@ public abstract class TinySet<T> extends IndexedSetBase<T> {
             int mask = table.length - 1;
             int hash = hash(key) & mask;
             int collisions = 0;
-            for (int i = table[hash] & 0xFFFF; i < 0xFFFF; i = table[hash = (hash + ++collisions) & mask] & 0xFFFF) {
+            for (int i = table[hash] & 0xFFFF; i < 0xFFFF;
+                 i = table[hash = (hash + ++collisions) & mask] & 0xFFFF) {
                 if (Objects.equals(key, keys[i])) {
                     return i;
                 }
@@ -171,7 +166,8 @@ public abstract class TinySet<T> extends IndexedSetBase<T> {
             int mask = table.length - 1;
             int hash = hash(key) & mask;
             int collisions = 0;
-            for (int i = table[hash]; i >= 0; i = table[hash = (hash + ++collisions) & mask]) {
+            for (int i = table[hash]; i >= 0;
+                 i = table[hash = (hash + ++collisions) & mask]) {
                 if (Objects.equals(key, keys[i])) {
                     return i;
                 }
@@ -180,7 +176,9 @@ public abstract class TinySet<T> extends IndexedSetBase<T> {
         }
     }
 
-    public static class Builder<T> extends IndexedSetBase<T> implements IndexedCollectionBase.NoAdditiveChange<T> {
+    public static class Builder<T>
+            extends IndexedSetBase<T>
+            implements IndexedCollectionBase.NoAdditiveChange<T> {
 
         private static final Object TOMBSTONE = new Object() {
 
@@ -201,24 +199,13 @@ public abstract class TinySet<T> extends IndexedSetBase<T> {
         private int size = 0;
 
         Builder() {
-            this(16);
+            this(4);
         }
 
-        Builder(int expectedSize) {
-            this.keys = new Object[expectedSize];
-            this.inverse = new int[expectedSize];
-            forceRehash(TinySet.tableSize(expectedSize));
-        }
-
-        private static int hash(Object key) {
-            int h;
-            return key == null ? 0 : (h = key.hashCode() * 0x85ebca6b) ^ h >>> 16;
-        }
-
-        private static int[] newTable(int size) {
-            int[] table = new int[size];
-            Arrays.fill(table, -1);
-            return table;
+        Builder(int initialSize) {
+            this.keys = new Object[initialSize];
+            this.inverse = new int[initialSize];
+            forceRehash(TinySet.tableSize(initialSize));
         }
 
         public void compact() {
@@ -240,18 +227,6 @@ public abstract class TinySet<T> extends IndexedSetBase<T> {
             Arrays.fill(keys, index, rawSize, null);
             this.size = index;
             this.rawSize = index;
-        }
-
-        private void forceRehash(int newSize) {
-            this.table = newTable(newSize);
-            this.size = 0;
-            compact();
-        }
-
-        private void softClearTable() {
-            for (int i = 0; i < rawSize; i++) {
-                table[inverse[i]] = -1;
-            }
         }
 
         @SuppressWarnings("unchecked")
@@ -277,25 +252,13 @@ public abstract class TinySet<T> extends IndexedSetBase<T> {
             return ~newIndex;
         }
 
-        private int checkOverflow(T key, int index) {
-            if (rawSize == keys.length) {
-                int newSize = keys.length + (keys.length >> 1);
-                keys = Arrays.copyOf(keys, newSize);
-                inverse = Arrays.copyOf(inverse, newSize);
-            }
-            if (2 * (rawSize + 1) > table.length) {
-                forceRehash(table.length * 2);
-                index = getIndex(key);
-            }
-            return index;
-        }
-
         @Override
         public int getIndex(Object key) {
             int collisions = 0;
             int mask = table.length - 1;
             int hash = hash(key) & mask;
-            for (int i = table[hash]; i >= 0; i = table[hash = (hash + ++collisions) & mask]) {
+            for (int i = table[hash]; i >= 0;
+                 i = table[hash = (hash + ++collisions) & mask]) {
                 if (Objects.equals(key, keys[i])) {
                     return i;
                 }
@@ -316,8 +279,16 @@ public abstract class TinySet<T> extends IndexedSetBase<T> {
             return keys[index] == TOMBSTONE;
         }
 
+        @Override
         public int size() {
             return size;
+        }
+
+        @Override
+        public void clear() {
+            Arrays.fill(keys, 0, rawSize, null);
+            softClearTable();
+            size = rawSize = 0;
         }
 
         @Override
@@ -327,14 +298,52 @@ public abstract class TinySet<T> extends IndexedSetBase<T> {
 
         public TinySet<T> build() {
             compact();
-            return TinySet.createUnsafe(Arrays.copyOf(keys, size));
+            Object[] o = Arrays.copyOf(keys, size);
+            if (o.length == 0) {
+                return new Empty<>();
+            } else if (o.length < 0xFF) {
+                return new Small<>(o);
+            } else if (o.length < 0xFFFF) {
+                return new Medium<>(o);
+            } else {
+                return new Large<>(o);
+            }
         }
 
-        @Override
-        public void clear() {
-            Arrays.fill(keys, 0, rawSize, null);
-            softClearTable();
-            size = rawSize = 0;
+        private void forceRehash(int newSize) {
+            this.table = newTable(newSize);
+            this.size = 0;
+            compact();
+        }
+
+        private void softClearTable() {
+            for (int i = 0; i < rawSize; i++) {
+                table[inverse[i]] = -1;
+            }
+        }
+
+        private int checkOverflow(T key, int index) {
+            if (rawSize == keys.length) {
+                int newSize = keys.length + (keys.length >> 1);
+                keys = Arrays.copyOf(keys, newSize);
+                inverse = Arrays.copyOf(inverse, newSize);
+            }
+            if (2 * (rawSize + 1) > table.length) {
+                forceRehash(table.length * 2);
+                index = getIndex(key);
+            }
+            return index;
+        }
+
+        private static int hash(Object key) {
+            int h;
+            return key == null ? 0 : (h = key.hashCode() * 0x85ebca6b) ^ h >>> 16;
+        }
+
+        private static int[] newTable(int size) {
+            int[] table = new int[size];
+            Arrays.fill(table, -1);
+            return table;
         }
     }
 }

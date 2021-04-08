@@ -1,0 +1,5 @@
+This work is derived from
+
+https://github.com/ralfstx/minimal-json
+
+Published under the MIT License

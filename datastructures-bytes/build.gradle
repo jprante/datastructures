@@ -1,0 +1,6 @@
+dependencies {
+    api "net.openhft:chronicle-core:2.21ea14"
+    testImplementation "org.junit.vintage:junit-vintage-engine:5.7.0"
+    testImplementation "junit:junit:4.13"
+    testImplementation "net.openhft:affinity:3.21ea0"
+}

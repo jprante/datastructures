@@ -1,5 +1,5 @@
 
-def junitVersion = project.hasProperty('junit.version')?project.property('junit.version'):'5.6.2'
+def junitVersion = project.hasProperty('junit.version')?project.property('junit.version'):'5.7.0'
 def hamcrestVersion = project.hasProperty('hamcrest.version')?project.property('hamcrest.version'):'2.2'
 
 dependencies {
@@ -11,10 +11,11 @@ dependencies {
 
 test {
     useJUnitPlatform()
-    failFast = true
+    failFast = false
     testLogging {
         events 'STARTED', 'PASSED', 'FAILED', 'SKIPPED'
     }
+    jvmArgs '--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED'
     afterSuite { desc, result ->
         if (!desc.parent) {
             println "\nTest result: ${result.resultType}"
