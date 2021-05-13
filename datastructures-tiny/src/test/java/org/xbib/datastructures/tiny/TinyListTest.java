@@ -56,7 +56,7 @@ public class TinyListTest {
     }
 
     @Test
-    public void testBuildEmpty() throws IOException, ClassNotFoundException {
+    public void testBuildEmpty() {
         testCount(0);
     }
 

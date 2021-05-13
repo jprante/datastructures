@@ -1,21 +1,12 @@
 package com.incesoft.tools.excel.xlsx;
 
-
 import java.util.StringTokenizer;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.incesoft.tools.excel.xlsx.SimpleXLSXWorkbook.XMLStreamCreator;
 
-
-/**
- * 
- * @author floyd
- * 
- */
 public class SheetCommentWriter {
 
 	XMLStreamWriter commentsWriter;
@@ -161,13 +152,12 @@ public class SheetCommentWriter {
 		// <x:Anchor>
 		// 1, 15, 0, 15, 3, 18, 3, 15</x:Anchor>
 		vmlWriter.writeStartElement("x:Anchor");
-		String anchorPoints = StringUtils.join(new Object[] {
+		String anchorPoints = String.join(",",
 				// start point(x,y)
-				c + 1, 15, r, 15,
+				String.valueOf(c + 1), String.valueOf(15), String.valueOf(r), String.valueOf(15),
 				// end point(x,y)
-				c + 1 + 2, 15,
-				r + 2 + new StringTokenizer(comment, "\n").countTokens(), 15 },
-				",");
+				String.valueOf(c + 1 + 2), String.valueOf(15),
+				String.valueOf(r + 2 + new StringTokenizer(comment, "\n").countTokens()), String.valueOf(15));
 		vmlWriter.writeCharacters(anchorPoints);
 		vmlWriter.writeEndElement();// end x:Anchor
 		vmlWriter.writeEndElement();// end x:ClientData

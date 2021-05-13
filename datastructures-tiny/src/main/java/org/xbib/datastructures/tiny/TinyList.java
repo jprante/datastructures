@@ -34,7 +34,7 @@ public class TinyList<T> extends IndexedListBase<T> implements IndexedListBase.I
         private int size;
 
         private Builder() {
-            this(4);
+            this(2);
         }
 
         private Builder(int initialSize) {
@@ -46,7 +46,7 @@ public class TinyList<T> extends IndexedListBase<T> implements IndexedListBase.I
         public int addOrGetIndex(T obj) {
             int index = size++;
             if (index == values.length) {
-                values = Arrays.copyOf(values, values.length >> 1);
+                values = Arrays.copyOf(values, values.length * 2);
             }
             values[index] = obj;
             return ~index;

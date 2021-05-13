@@ -8,16 +8,14 @@ import org.junit.jupiter.api.Test;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class CharsetUtilTest {
-    private static final Logger logger = Logger.getLogger(CharsetUtilTest.class.getName());
 
     @Test
     public void encode() throws Exception {
         // euro currency symbol
         StringBuilder str0 = new StringBuilder("\u20ac");
-        byte[] bytes = null;
+        byte[] bytes;
 
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_GSM);
         assertArrayEquals(Hex.hexToByteArray("1B65"), bytes);
@@ -31,16 +29,16 @@ public class CharsetUtilTest {
 
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_UCS_2LE);
         assertArrayEquals(Hex.hexToByteArray("AC20"), bytes);
-        assertArrayEquals(str0.toString().getBytes("UTF-16LE"), bytes);
+        assertArrayEquals(str0.toString().getBytes(StandardCharsets.UTF_16LE), bytes);
 
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_UTF_8);
         assertArrayEquals(Hex.hexToByteArray("E282AC"), bytes);
-        assertArrayEquals(str0.toString().getBytes("UTF-8"), bytes);
+        assertArrayEquals(str0.toString().getBytes(StandardCharsets.UTF_8), bytes);
 
         // latin-1 doesn't contain the euro symbol - replace with '?'
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_ISO_8859_1);
         assertArrayEquals(Hex.hexToByteArray("3F"), bytes);
-        assertArrayEquals(str0.toString().getBytes("ISO-8859-1"), bytes);
+        assertArrayEquals(str0.toString().getBytes(StandardCharsets.ISO_8859_1), bytes);
 
         // latin-9 does contain the euro symbol
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_ISO_8859_15);
@@ -53,12 +51,8 @@ public class CharsetUtilTest {
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFD2_GSM);
         assertArrayEquals(Hex.hexToByteArray("1B65"), bytes);
 
-        bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFTR_GSM);
-        assertArrayEquals(Hex.hexToByteArray("1B65"), bytes);
-
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_TMOBILENL_GSM);
         assertArrayEquals(Hex.hexToByteArray("80"), bytes);
-
 
         // longer string with @ symbol in-between
         str0 = new StringBuilder("Hello @ World");
@@ -101,9 +95,9 @@ public class CharsetUtilTest {
         //logger.debug(HexUtil.toHexString(bytes));
         assertArrayEquals(Hex.hexToByteArray("48656C6C6F204020576F726C64"), bytes);
 
-        bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFTR_GSM);
+        //bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFTR_GSM);
         //logger.debug(HexUtil.toHexString(bytes));
-        assertArrayEquals(Hex.hexToByteArray("48656C6C6F204020576F726C64"), bytes);
+        //assertArrayEquals(Hex.hexToByteArray("48656C6C6F204020576F726C64"), bytes);
 
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_TMOBILENL_GSM);
         //logger.debug(HexUtil.toHexString(bytes));
@@ -150,9 +144,6 @@ public class CharsetUtilTest {
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFD2_GSM);
         assertArrayEquals(Hex.hexToByteArray("4A6F6579426C7565"), bytes);
 
-        bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFTR_GSM);
-        assertArrayEquals(Hex.hexToByteArray("4A6F6579426C7565"), bytes);
-
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_TMOBILENL_GSM);
         assertArrayEquals(Hex.hexToByteArray("4A6F6579426C7565"), bytes);
 
@@ -197,8 +188,8 @@ public class CharsetUtilTest {
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFD2_GSM);
         assertArrayEquals(Hex.hexToByteArray("1B281B291B3C1B3E24"), bytes);
 
-        bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFTR_GSM);
-        assertArrayEquals(Hex.hexToByteArray("1B281B291B3C1B3E24"), bytes);
+        //bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFTR_GSM);
+        //assertArrayEquals(Hex.hexToByteArray("1B281B291B3C1B3E24"), bytes);
 
         // {}[] not supported
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_TMOBILENL_GSM);
@@ -206,9 +197,9 @@ public class CharsetUtilTest {
 
         // chars specifically to vodafone-turkey
         //str0 = "$@£¤¥§ÄÅßñΓΔΘΩ€";
-        str0 = new StringBuilder("$@\u00a3\u00a4\u00a5\u00a7\u00c4\u00c5\u00df\u00f1\u0393\u0394\u0398\u03a9\u20ac");
-        bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFTR_GSM);
-        assertArrayEquals(Hex.hexToByteArray("2440A3A4A5A7C4C5DFF1137F19151B65"), bytes);
+        //str0 = new StringBuilder("$@\u00a3\u00a4\u00a5\u00a7\u00c4\u00c5\u00df\u00f1\u0393\u0394\u0398\u03a9\u20ac");
+        //bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFTR_GSM);
+        //assertArrayEquals(Hex.hexToByteArray("2440A3A4A5A7C4C5DFF1137F19151B65"), bytes);
 
         // form feed is an escape code in GSM
         str0 = new StringBuilder("\f\f");
@@ -247,9 +238,6 @@ public class CharsetUtilTest {
         str1 = CharsetUtil.decode(Hex.hexToByteArray("1B65"), CharsetUtil.CHARSET_VFD2_GSM);
         assertEquals(str0, str1);
 
-        str1 = CharsetUtil.decode(Hex.hexToByteArray("1B65"), CharsetUtil.CHARSET_VFTR_GSM);
-        assertEquals(str0, str1);
-
         str1 = CharsetUtil.decode(Hex.hexToByteArray("80"), CharsetUtil.CHARSET_TMOBILENL_GSM);
         assertEquals(str0, str1);
 
@@ -281,9 +269,6 @@ public class CharsetUtilTest {
         str1 = CharsetUtil.decode(Hex.hexToByteArray("48656C6C6F204020576F726C64"), CharsetUtil.CHARSET_VFD2_GSM);
         assertEquals(str0, str1);
 
-        str1 = CharsetUtil.decode(Hex.hexToByteArray("48656C6C6F204020576F726C64"), CharsetUtil.CHARSET_VFTR_GSM);
-        assertEquals(str0, str1);
-
         str1 = CharsetUtil.decode(Hex.hexToByteArray("48656C6C6F200020576F726C64"), CharsetUtil.CHARSET_TMOBILENL_GSM);
         assertEquals(str0, str1);
 
@@ -313,9 +298,6 @@ public class CharsetUtilTest {
         assertEquals(str0, str1);
 
         str1 = CharsetUtil.decode(Hex.hexToByteArray("4A6F6579426C7565"), CharsetUtil.CHARSET_VFD2_GSM);
-        assertEquals(str0, str1);
-
-        str1 = CharsetUtil.decode(Hex.hexToByteArray("4A6F6579426C7565"), CharsetUtil.CHARSET_VFTR_GSM);
         assertEquals(str0, str1);
 
         str1 = CharsetUtil.decode(Hex.hexToByteArray("4A6F6579426C7565"), CharsetUtil.CHARSET_TMOBILENL_GSM);
@@ -350,9 +332,6 @@ public class CharsetUtilTest {
         str1 = CharsetUtil.decode(Hex.hexToByteArray("1B281B291B3C1B3E24"), CharsetUtil.CHARSET_VFD2_GSM);
         assertEquals(str0, str1);
 
-        str1 = CharsetUtil.decode(Hex.hexToByteArray("1B281B291B3C1B3E24"), CharsetUtil.CHARSET_VFTR_GSM);
-        assertEquals(str0, str1);
-
         // skip TMOBILENL_GSM - can't encode {}[]
 
         // had problem passing these tests on linux vs. mac os x -- issue with
@@ -368,12 +347,6 @@ public class CharsetUtilTest {
         //str0 = "@$ß$@ÑÜ_ñü_";
         str0 = "@$\u00df$@\u00d1\u00dc_\u00f1\u00fc_";
         str1 = CharsetUtil.decode(Hex.hexToByteArray("40241E24405D5E5F7D7E5F"), CharsetUtil.CHARSET_AIRWIDE_IA5);
-        assertEquals(str0, str1);
-
-        // chars specifically to vodafone-turkey
-        //str0 = "$@£¤¥§ÄÅßñΓΔΘΩ€";
-        str0 = "$@\u00a3\u00a4\u00a5\u00a7\u00c4\u00c5\u00df\u00f1\u0393\u0394\u0398\u03a9\u20ac";
-        str1 = CharsetUtil.decode(Hex.hexToByteArray("2440A3A4A5A7C4C5DFF1137F19151B65"), CharsetUtil.CHARSET_VFTR_GSM);
         assertEquals(str0, str1);
 
         // form feed GSM escape sequence
@@ -411,7 +384,7 @@ public class CharsetUtilTest {
             byte[] expectedBytes = CharsetUtil.encode(expectedString, entry.getKey());
             StringBuilder sb = new StringBuilder("T");
             CharsetUtil.decode(expectedBytes, sb, entry.getValue());
-            assertEquals("Charset " + entry.getKey() + " impl broken", "T"+expectedString, sb.toString());
+            assertEquals("T"+expectedString, sb.toString(), "Charset " + entry.getKey() + " impl broken");
         }
     }
 
@@ -429,7 +402,7 @@ public class CharsetUtilTest {
     }
 
     @Test
-    public void normalize() throws Exception {
+    public void normalize() {
         StringBuilder in = new StringBuilder("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefjhijklmnopqrstuvwxyz01234567890?&@");
         for (Map.Entry<String,Charset> entry : CharsetUtil.getCharsetMap().entrySet()) {
             assertEquals(in.toString(), CharsetUtil.normalize(in, entry.getValue()), "Charset " + entry.getKey() + " implementation broken");
@@ -439,7 +412,6 @@ public class CharsetUtilTest {
         assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_PACKED_GSM));
         assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_AIRWIDE_GSM));
         assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_VFD2_GSM));
-        assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_VFTR_GSM));
         assertEquals("?", CharsetUtil.normalize(in, CharsetUtil.CHARSET_ISO_8859_1));
         assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_ISO_8859_15));
         assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_UCS_2));
@@ -452,7 +424,6 @@ public class CharsetUtilTest {
         assertEquals("?", CharsetUtil.normalize(in, CharsetUtil.CHARSET_PACKED_GSM));
         assertEquals("?", CharsetUtil.normalize(in, CharsetUtil.CHARSET_AIRWIDE_GSM));
         assertEquals("?", CharsetUtil.normalize(in, CharsetUtil.CHARSET_VFD2_GSM));
-        assertEquals("?", CharsetUtil.normalize(in, CharsetUtil.CHARSET_VFTR_GSM));
         assertEquals("?", CharsetUtil.normalize(in, CharsetUtil.CHARSET_ISO_8859_1));
         assertEquals("?", CharsetUtil.normalize(in, CharsetUtil.CHARSET_ISO_8859_15));
         assertEquals("\u6025", CharsetUtil.normalize(in, CharsetUtil.CHARSET_UCS_2));

@@ -18,9 +18,6 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.xbib.datastructures.xslx.WriterSupport;
 
 /**
@@ -72,8 +69,6 @@ public class XLSWriterSupport extends WriterSupport {
 		Collections.sort(colours);
 	}
 
-	private static final Log log = LogFactory.getLog(XLSWriterSupport.class);
-
 	@Override
 	public void writeRow(String[] rowData, CellFormat[] formats) {
 		for (int col = 0; col < rowData.length; col++) {
@@ -103,7 +98,7 @@ public class XLSWriterSupport extends WriterSupport {
 							try {
 								newFormat.setBackground(transformColor(format.getBackColor()));
 							} catch (WriteException e) {
-								log.error("", e);
+								//log.error("", e);
 							}
 						}
 						if (format.getForeColor() != -1) {
@@ -113,7 +108,7 @@ public class XLSWriterSupport extends WriterSupport {
 								writableFont.setColour(Colour.PINK2);
 								newFormat.setFont(writableFont);
 							} catch (WriteException e) {
-								log.error("", e);
+								//log.error("", e);
 							}
 						}
 					}

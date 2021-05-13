@@ -47,8 +47,6 @@ public class CharsetUtil {
     public static final String NAME_AIRWIDE_IA5 = "AIRWIDE-IA5";
     // special charset for "Vodafone M2" SMSC that has a unique GSM mapping
     public static final String NAME_VFD2_GSM = "VFD2-GSM";
-    // special charset for "Vodafone Turkey" SMSC that has a unique GSM mapping
-    public static final String NAME_VFTR_GSM = "VFTR-GSM";
     /** Alias for "PACKED-GSM" */
     public static final String NAME_GSM7 = "GSM7";
     /** Alias for "GSM" */
@@ -71,7 +69,6 @@ public class CharsetUtil {
     public static final Charset CHARSET_MODIFIED_UTF8 = new ModifiedUTF8Charset();
     public static final Charset CHARSET_AIRWIDE_IA5 = new AirwideIA5Charset();
     public static final Charset CHARSET_VFD2_GSM = new VFD2GSMCharset();
-    public static final Charset CHARSET_VFTR_GSM = new VFTRGSMCharset();
     /** Alias for "PACKED-GSM" */
     public static final Charset CHARSET_GSM7 = CHARSET_PACKED_GSM;
     /** Alias for "GSM" */
@@ -92,7 +89,6 @@ public class CharsetUtil {
         charsets.put(NAME_UTF_8, CHARSET_UTF_8);
         charsets.put(NAME_AIRWIDE_IA5, CHARSET_AIRWIDE_IA5);
         charsets.put(NAME_VFD2_GSM, CHARSET_VFD2_GSM);
-        charsets.put(NAME_VFTR_GSM, CHARSET_VFTR_GSM);
         charsets.put(NAME_GSM7, CHARSET_GSM7);
         charsets.put(NAME_GSM8, CHARSET_GSM8);
         charsets.put(NAME_AIRWIDE_GSM, CHARSET_AIRWIDE_GSM);
@@ -156,5 +152,4 @@ public class CharsetUtil {
     public static String normalize(StringBuilder stringBuilder, Charset charset) {
         return charset.normalize(stringBuilder);
     }
-
 }

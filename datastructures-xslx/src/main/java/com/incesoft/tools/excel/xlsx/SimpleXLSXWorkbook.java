@@ -29,16 +29,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * A simple implementation of OOXML(Excel part) to read and modify Excel 2007+
  * documents
- * 
- * @author floyd
- * 
+ *
  */
 public class SimpleXLSXWorkbook {
 	static {
@@ -101,7 +95,7 @@ public class SimpleXLSXWorkbook {
 				this.zipfile.close();
 				this.zipfile = null;
 			} catch (IOException e) {
-				log.error("", e);
+				//log.error("", e);
 			}
 		this.commiter = null;
 		this.sharedStrings.clear();
@@ -305,26 +299,10 @@ public class SimpleXLSXWorkbook {
 		return sheets.size();
 	}
 
-	/**
-	 * Get sheet by index(0~sheetCount-1)
-	 * 
-	 * @param i
-	 * @return
-	 */
 	public Sheet getSheet(int i) {
 		return getSheet(i, true);
 	}
 
-	/**
-	 * Get sheet by index(0~sheetCount-1)
-	 * 
-	 * @param i
-	 * @param parseAllRow
-	 *            true to load all rows;false for lazy loading without memory
-	 *            consuming({@link Sheet#setAddToMemory(boolean)=false}) when
-	 *            doing iterator by {@link Sheet#nextRow()}
-	 * @return
-	 */
 	public Sheet getSheet(int i, boolean parseAllRow) {
 		if (i >= sheets.size())
 			throw new IllegalArgumentException("sheet " + i + " not exists!SheetCount=" + sheets.size());
@@ -336,9 +314,6 @@ public class SimpleXLSXWorkbook {
 		return sheet;
 	}
 
-	// SHEET<<<
-
-	// MODIFY >>>
 	List<Font> fonts = new ArrayList<Font>();
 
 	List<Fill> fills = new ArrayList<Fill>();
@@ -1063,7 +1038,8 @@ public class SimpleXLSXWorkbook {
 						}
 					}
 					zos.putNextEntry(new ZipEntry(entry.getName()));
-					IOUtils.copy(wb.zipfile.getInputStream(entry), zos);
+					//IOUtils.copy(wb.zipfile.getInputStream(entry), zos);
+					wb.zipfile.getInputStream(entry).transferTo(zos);
 				}
 			}
 		}
@@ -1103,8 +1079,6 @@ public class SimpleXLSXWorkbook {
 		// style.getFill().setFgColor("FF00FF00");
 
 	}
-
-	private static final Log log = LogFactory.getLog(SimpleXLSXWorkbook.class);
 
 	@SuppressWarnings("unchecked")
 	static private class BidirectionMap implements Map {

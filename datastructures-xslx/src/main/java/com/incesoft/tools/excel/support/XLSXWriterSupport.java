@@ -2,9 +2,8 @@ package com.incesoft.tools.excel.support;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
-
-import org.apache.commons.io.IOUtils;
 
 import org.xbib.datastructures.xslx.WriterSupport;
 import com.incesoft.tools.excel.xlsx.CellStyle;
@@ -85,8 +84,13 @@ public class XLSXWriterSupport extends WriterSupport {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
-			if (fos != null)
-				IOUtils.closeQuietly(fos);
+			if (fos != null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					//
+				}
+			}
 			if (workbook != null)
 				workbook.close();
 		}
