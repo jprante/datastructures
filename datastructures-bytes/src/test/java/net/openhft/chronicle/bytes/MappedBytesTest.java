@@ -6,6 +6,7 @@ import net.openhft.chronicle.core.io.IOTools;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -343,6 +344,7 @@ public class MappedBytesTest extends BytesTestCommon {
         bytes.releaseLast();
     }
 
+    @Disabled("concourse ci")
     @Test
     public void shouldBeReadOnly() throws Exception {
         final File tempFile = File.createTempFile("mapped", "bytes");
