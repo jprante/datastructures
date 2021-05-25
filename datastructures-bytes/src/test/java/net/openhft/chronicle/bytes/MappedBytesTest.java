@@ -5,8 +5,8 @@ import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.core.io.IOTools;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.jupiter.api.Disabled;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -344,7 +344,7 @@ public class MappedBytesTest extends BytesTestCommon {
         bytes.releaseLast();
     }
 
-    @Disabled("concourse ci")
+    @Ignore("concourse ci")
     @Test
     public void shouldBeReadOnly() throws Exception {
         final File tempFile = File.createTempFile("mapped", "bytes");
@@ -352,9 +352,7 @@ public class MappedBytesTest extends BytesTestCommon {
             raf.setLength(4096);
             assertTrue(tempFile.setWritable(false));
             final MappedBytes mappedBytes = MappedBytes.readOnly(tempFile);
-
-            assertTrue(mappedBytes.
-                    isBackingFileReadOnly());
+            assertTrue(mappedBytes.isBackingFileReadOnly());
             mappedBytes.releaseLast();
             assertEquals(0, mappedBytes.refCount());
         }
