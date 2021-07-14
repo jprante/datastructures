@@ -1,9 +1,9 @@
 package org.xbib.datastructures.yaml.test;
 
-import org.xbib.datastructures.yaml.model.HashNode;
-import org.xbib.datastructures.yaml.model.ListNode;
-import org.xbib.datastructures.yaml.model.Node;
-import org.xbib.datastructures.yaml.model.ValueNode;
+import org.xbib.datastructures.yaml.MapNode;
+import org.xbib.datastructures.yaml.ListNode;
+import org.xbib.datastructures.yaml.Node;
+import org.xbib.datastructures.yaml.ValueNode;
 import java.util.Map;
 
 public class Formatter {
@@ -15,8 +15,8 @@ public class Formatter {
         if (node instanceof ListNode) {
             return format((ListNode) node);
         }
-        if (node instanceof HashNode) {
-            return format((HashNode) node);
+        if (node instanceof MapNode) {
+            return format((MapNode) node);
         }
         return "";
     }
@@ -26,8 +26,8 @@ public class Formatter {
         StringBuilder sb = new StringBuilder();
         sb.append(indent);
         sb.append("<TextNode value=");
-        if (valueNode.getValue() != null) {
-            String s = excerpt(valueNode.getValue());
+        if (valueNode.get() != null) {
+            String s = excerpt(valueNode.get());
             s = escape(s);
             s = quote(s, true);
             sb.append(s);
@@ -62,14 +62,14 @@ public class Formatter {
         StringBuilder sb = new StringBuilder();
         sb.append(indent);
         sb.append("<ListNode items=");
-        if (!listNode.getItems().isEmpty()) {
+        if (!listNode.get().isEmpty()) {
             sb.append("[");
-            for (int i = 0; i < listNode.getItems().size(); i++) {
+            for (int i = 0; i < listNode.get().size(); i++) {
                 if (i > 0) {
                     sb.append(", ");
                 }
                 sb.append(i).append(": ").append(toStringOfComments(listNode, i))
-                        .append('\n').append(format(listNode.getItems().get(i)));
+                        .append('\n').append(format(listNode.get().get(i)));
             }
             sb.append('\n');
             sb.append(indent);
@@ -97,19 +97,19 @@ public class Formatter {
         return sb.toString();
     }
 
-    private String format(HashNode hashNode) {
+    private String format(MapNode mapNode) {
         StringBuilder sb = new StringBuilder();
-        String indent = spaces(hashNode.getDepth());
+        String indent = spaces(mapNode.getDepth());
         sb.append(indent).append("<HashNode children=");
-        if (!hashNode.getChildren().isEmpty()) {
+        if (!mapNode.get().isEmpty()) {
             sb.append('{');
             boolean isFirst = true;
-            for (Map.Entry<String, Node> kv : hashNode.getChildren().entrySet()) {
+            for (Map.Entry<String, Node<?>> kv : mapNode.get().entrySet()) {
                 if (!isFirst) {
                     sb.append(", ");
                 }
                 sb.append('"').append(kv.getKey()).append("\": ")
-                        .append(toStringOfComments(hashNode, kv.getKey())).append('\n')
+                        .append(toStringOfComments(mapNode, kv.getKey())).append('\n')
                         .append(format(kv.getValue()));
                 isFirst = false;
             }
@@ -119,12 +119,12 @@ public class Formatter {
         return sb.toString();
     }
 
-    private String toStringOfComments(HashNode hashNode, String name) {
+    private String toStringOfComments(MapNode mapNode, String name) {
         StringBuilder sb = new StringBuilder();
-        if (hashNode.getComments().get(name) != null && !hashNode.getComments().get(name).isEmpty()) {
+        if (mapNode.getComments().get(name) != null && !mapNode.getComments().get(name).isEmpty()) {
             sb.append("comments=");
             StringBuilder comments = new StringBuilder();
-            for (String comment : hashNode.getComments().get(name)) {
+            for (String comment : mapNode.getComments().get(name)) {
                 comments.append(comment).append(' ');
             }
             String s = excerpt(comments.toString());

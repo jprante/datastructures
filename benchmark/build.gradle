@@ -1,0 +1,21 @@
+plugins {
+    id "io.morethan.jmhreport" version "0.9.0"
+}
+
+jmhReport {
+    jmhResultPath = project.file('build/reports/jmh/result.json')
+    jmhReportOutput = project.file('build/reports/jmh')
+}
+
+dependencies {
+    implementation project(':datastructures-json')
+    implementation project(':datastructures-json-dsl')
+    implementation project(':datastructures-json-flat')
+    implementation project(':datastructures-json-iterator')
+    implementation project(':datastructures-json-minimal')
+    implementation project(':datastructures-json-noggit')
+    implementation project(':datastructures-json-simple')
+    implementation "com.google.code.gson:gson:${project.property('gson.version')}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${project.property('jackson.version')}"
+    implementation "org.json:json:${project.property('orgjson.version')}"
+}

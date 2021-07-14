@@ -33,7 +33,7 @@ public class TinyList<T> extends IndexedListBase<T> implements IndexedListBase.I
 
         private int size;
 
-        private Builder() {
+        public Builder() {
             this(2);
         }
 

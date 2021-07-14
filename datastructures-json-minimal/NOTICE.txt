@@ -1,4 +1,4 @@
-This work is derived from
+This work is based on
 
 https://github.com/ralfstx/minimal-json
 

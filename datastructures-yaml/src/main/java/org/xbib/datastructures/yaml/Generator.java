@@ -1,10 +1,6 @@
 package org.xbib.datastructures.yaml;
 
-import org.xbib.datastructures.yaml.model.HashNode;
-import org.xbib.datastructures.yaml.model.ListNode;
-import org.xbib.datastructures.yaml.model.Node;
-import org.xbib.datastructures.yaml.model.ValueNode;
-import org.xbib.datastructures.yaml.model.ValueNode.TextType;
+import org.xbib.datastructures.yaml.ValueNode.TextType;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
@@ -12,15 +8,15 @@ import java.util.Map;
 
 public class Generator {
 
-    private final Node root;
+    private final Node<?> root;
 
     private final int indent;
 
-    public Generator(Node root) {
+    public Generator(Node<?> root) {
         this(root, 2);
     }
 
-    public Generator(Node root, int indent) {
+    public Generator(Node<?> root, int indent) {
         this.root = root;
         this.indent = indent;
     }
@@ -35,7 +31,7 @@ public class Generator {
         }
     }
 
-    private boolean internalWrite(Appendable appendable, Node curnode, Node prevnode) throws IOException {
+    private boolean internalWrite(Appendable appendable, Node<?> curnode, Node<?> prevnode) throws IOException {
         if (curnode == null) {
             return false;
         }
@@ -49,13 +45,13 @@ public class Generator {
                     if (lf) {
                         appendable.append('\n').append(indent);
                     }
-                    appendable.append(txnode.getValue());
+                    appendable.append(txnode.get());
                     break;
                 case MULTILINE:
                     if (lf) {
                         appendable.append('\n');
                     }
-                    String s = prefix(linewrap(txnode.getValue()), indent);
+                    String s = prefix(linewrap(txnode.get()), indent);
                     appendable.append(s);
                     break;
                 case TEXT:
@@ -66,24 +62,24 @@ public class Generator {
                     if (txnode.getType() == TextType.TEXT_ANGLE) {
                         appendable.append(">\n");
                     }
-                    appendable.append(prefix(txnode.getValue(), indent));
+                    appendable.append(prefix(txnode.get(), indent));
                     break;
             }
             return true;
-        } else if (curnode instanceof HashNode) {
-            HashNode hashNode = (HashNode) curnode;
-            for (Map.Entry<String, Map.Entry<Node, List<String>>> knc : hashNode.getChildCommentPairs()) {
+        } else if (curnode instanceof MapNode) {
+            MapNode mapNode = (MapNode) curnode;
+            for (Map.Entry<String, Map.Entry<Node<?>, List<String>>> knc : mapNode.getChildCommentPairs()) {
                 lf = writeComments(appendable, knc.getValue().getValue(), indent, lf);
                 if (lf || (prevnode != null && !(prevnode instanceof ListNode))) {
                     appendable.append("\n").append(indent);
                 }
                 appendable.append(knc.getKey()).append(": ");
-                lf = internalWrite(appendable, knc.getValue().getKey(), hashNode);
+                lf = internalWrite(appendable, knc.getValue().getKey(), mapNode);
             }
             return lf;
         } else if (curnode instanceof ListNode) {
             ListNode listNode = (ListNode) curnode;
-            for (Map.Entry<Node, List<String>> nc : listNode.getItemCommentPairs()) {
+            for (Map.Entry<Node<?>, List<String>> nc : listNode.getItemCommentPairs()) {
                 lf = writeComments(appendable, nc.getValue(), indent, lf);
                 if (lf || (prevnode != null && !(prevnode instanceof ListNode))) {
                     appendable.append("\n").append(indent);

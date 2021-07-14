@@ -1,0 +1,9 @@
+dependencies {
+    implementation "org.javassist:javassist:${project.property('javassist.version')}"
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:${project.property('jackson.version')}"
+    testImplementation "com.google.code.gson:gson:${project.property('gson.version')}"
+    jmhImplementation "com.google.code.gson:gson:${project.property('gson.version')}"
+    jmhImplementation "com.fasterxml.jackson.core:jackson-annotations:${project.property('jackson.version')}"
+    jmhImplementation "com.fasterxml.jackson.core:jackson-databind:${project.property('jackson.version')}"
+}

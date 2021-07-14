@@ -49,7 +49,7 @@ public abstract class TinyMap<K, V> extends IndexedMapBase<K, V>  {
 
         private Object[] values;
 
-        private Builder() {
+        public Builder() {
             this(16);
         }
 

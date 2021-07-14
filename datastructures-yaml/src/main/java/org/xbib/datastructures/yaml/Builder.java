@@ -1,9 +1,5 @@
 package org.xbib.datastructures.yaml;
 
-import org.xbib.datastructures.yaml.model.HashNode;
-import org.xbib.datastructures.yaml.model.ListNode;
-import org.xbib.datastructures.yaml.model.Node;
-import org.xbib.datastructures.yaml.model.ValueNode;
 import java.util.List;
 import java.util.Map;
 
@@ -15,24 +11,24 @@ public class Builder {
         this.object = object;
     }
 
-    public Node build() {
+    public Node<?> build() {
         return object == null ? null : internalBuild(null, object);
     }
 
     @SuppressWarnings("unchecked")
-    private Node internalBuild(Node node, Object object) {
+    private Node<?> internalBuild(Node<?> node, Object object) {
         if (object instanceof List) {
             ListNode listNode = new ListNode(node);
             for (Object item : (List<Object>) object) {
-                listNode.addItem(internalBuild(listNode, item));
+                listNode.add(internalBuild(listNode, item));
             }
             return listNode;
         } else if (object instanceof Map) {
-            HashNode hashNode = new HashNode(node);
+            MapNode mapNode = new MapNode(node);
             for (Map.Entry<Object, Object> kv : ((Map<Object, Object>) object).entrySet()) {
-                hashNode.putChild(deliteral(kv.getKey().toString()), internalBuild(hashNode, kv.getValue()));
+                mapNode.put(deliteral(kv.getKey().toString()), internalBuild(mapNode, kv.getValue()));
             }
-            return hashNode;
+            return mapNode;
         } else {
             return new ValueNode(node, object.toString());
         }

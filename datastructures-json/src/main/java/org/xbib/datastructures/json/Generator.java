@@ -9,12 +9,18 @@ import java.util.Objects;
 
 public class Generator {
 
+    private final Node <?> node;
+
     private final Writer writer;
 
     private JsonContext context;
 
-    public Generator(Writer writer) {
+    public Generator(Node<?> node, Writer writer) {
+        this.node = node;
         this.writer = writer;
+    }
+
+    public void generate() throws IOException {
     }
 
     public Generator beginArray() throws IOException {

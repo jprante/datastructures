@@ -7,11 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xbib.datastructures.yaml.Builder;
 import org.xbib.datastructures.yaml.Generator;
-import org.xbib.datastructures.yaml.model.HashNode;
-import org.xbib.datastructures.yaml.model.ListNode;
-import org.xbib.datastructures.yaml.model.Node;
+import org.xbib.datastructures.yaml.MapNode;
+import org.xbib.datastructures.yaml.ListNode;
+import org.xbib.datastructures.yaml.Node;
 import org.xbib.datastructures.yaml.Parser;
-import org.xbib.datastructures.yaml.model.ValueNode;
+import org.xbib.datastructures.yaml.ValueNode;
 import org.xbib.datastructures.yaml.Yaml;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -49,24 +49,26 @@ public class YamlTest {
 
     @Test
     public void testNode() {
-        HashNode hsnode; ListNode lsnode; ValueNode txnode;
-        hsnode = (HashNode) root;
-        txnode = (ValueNode) hsnode.getChild("test");
-        assertEquals("", txnode.getValue());
-        hsnode = (HashNode) root;
-        hsnode = (HashNode) hsnode.getChild("types");
-        txnode = (ValueNode) hsnode.getChild("multiline");
-        assertEquals("line 1 line 2 line 3", txnode.getValue());
-        txnode = (ValueNode) hsnode.getChild("text");
-        assertEquals("def func(x) do\n  # do something\n  print x = x * 2\nend", txnode.getValue());
-        hsnode = (HashNode) root;
-        lsnode = (ListNode) hsnode.getChild("hash1");
-        hsnode = (HashNode) lsnode.getItem(0);
-        lsnode = (ListNode) hsnode.getChild("hash2");
-        txnode = (ValueNode) lsnode.getItem(0);
-        assertEquals("the treasure is deep", txnode.getValue());
-        txnode.setValue("new val");
-        assertEquals("new val", txnode.getValue());
+        MapNode hsnode;
+        ListNode lsnode;
+        ValueNode txnode;
+        hsnode = (MapNode) root;
+        txnode = (ValueNode) hsnode.get("test");
+        assertEquals("", txnode.get());
+        hsnode = (MapNode) root;
+        hsnode = (MapNode) hsnode.get("types");
+        txnode = (ValueNode) hsnode.get("multiline");
+        assertEquals("line 1 line 2 line 3", txnode.get());
+        txnode = (ValueNode) hsnode.get("text");
+        assertEquals("def func(x) do\n  # do something\n  print x = x * 2\nend", txnode.get());
+        hsnode = (MapNode) root;
+        lsnode = (ListNode) hsnode.get("hash1");
+        hsnode = (MapNode) lsnode.get(0);
+        lsnode = (ListNode) hsnode.get("hash2");
+        txnode = (ValueNode) lsnode.get(0);
+        assertEquals("the treasure is deep", txnode.get());
+        txnode.set("new val");
+        assertEquals("new val", txnode.get());
     }
 
     @Test
@@ -134,7 +136,7 @@ public class YamlTest {
         logger.log(Level.INFO, "text1 = " + text1);
         Parser parser = new Parser(new StringReader(text1));
         parser.parse();
-        Node node = parser.getNode();
+        Node<?> node = parser.getNode();
         logger.log(Level.INFO, "node2 = " + formatter.format(node));
         String text2 = writeToString(new Generator(node));
         logger.log(Level.INFO, "text2 = " + text2);

@@ -1,9 +1,5 @@
 package org.xbib.datastructures.yaml;
 
-import org.xbib.datastructures.yaml.model.HashNode;
-import org.xbib.datastructures.yaml.model.ListNode;
-import org.xbib.datastructures.yaml.model.Node;
-import org.xbib.datastructures.yaml.model.ValueNode;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -13,17 +9,17 @@ public class Yaml {
 
     private final char separator;
 
-    private Node root;
+    private Node<?> root;
 
     public Yaml() {
         this(null);
     }
 
-    public Yaml(Node root) {
+    public Yaml(Node<?> root) {
         this(root, '.');
     }
 
-    public Yaml(Node root, char separator) {
+    public Yaml(Node<?> root, char separator) {
         this.root = root;
         this.separator = separator;
     }
@@ -38,11 +34,11 @@ public class Yaml {
         new Generator(getRoot()).generate(writer);
     }
 
-    public void setRoot(Node root) {
+    public void setRoot(Node<?> root) {
         this.root = root;
     }
 
-    public Node getRoot() {
+    public Node<?> getRoot() {
         return root;
     }
 
@@ -211,7 +207,7 @@ public class Yaml {
             }
             makeNode(path);
         }
-        Node node = getNode(path);
+        Node<?> node = getNode(path);
         if (!(node instanceof ValueNode)) {
             return false;
         }
@@ -225,12 +221,12 @@ public class Yaml {
                 || value instanceof Short
                 || value instanceof Character
                 || value instanceof Byte) {
-            txnode.setValue(String.valueOf(value));
+            txnode.set(String.valueOf(value));
         } else if (value instanceof Instant) {
             Instant instant = (Instant) value;
-            txnode.setValue(instant.toString());
+            txnode.set(instant.toString());
         } else {
-            txnode.setValue(value == null ? null : value.toString());
+            txnode.set(value == null ? null : value.toString());
         }
         return true;
     }
@@ -239,22 +235,22 @@ public class Yaml {
         return set(path, instant.toString());
     }
 
-    public Node getNode(String path) {
+    public Node<?> getNode(String path) {
         return path == null ? null : internalGetNode(root, path);
     }
 
-    private Node internalGetNode(Node node, String path) {
+    private Node<?> internalGetNode(Node<?> node, String path) {
         if (node == null || path.isEmpty()) {
             return node;
         }
         String[] sr = cut(path, separator);
         String sectName = sr[0];
         String restPath = sr[1];
-        if (node instanceof HashNode) {
-            return internalGetNode(((HashNode) node).getChild(sectName), restPath);
+        if (node instanceof MapNode) {
+            return internalGetNode(((MapNode) node).get(sectName), restPath);
         } else if (node instanceof ListNode) {
             try {
-                return internalGetNode(((ListNode) node).getItem(Integer.parseInt(sectName)), restPath);
+                return internalGetNode(((ListNode) node).get(Integer.parseInt(sectName)), restPath);
             } catch (NumberFormatException ignore) {
                 //
             }
@@ -268,7 +264,7 @@ public class Yaml {
         }
     }
 
-    private Node internalMakeNode(Node node, String path) {
+    private Node<?> internalMakeNode(Node<?> node, String path) {
         if (root != null && node == null) {
             return null;
         }
@@ -288,29 +284,29 @@ public class Yaml {
                     int i = Integer.parseInt(sectName);
                     return root = internalMakeNode(root = new ListNode(node), path);
                 } catch (NumberFormatException ignore) {
-                    return root = internalMakeNode(root = new HashNode(node), path);
+                    return root = internalMakeNode(root = new MapNode(node), path);
                 }
             }
         }
-        if (node instanceof HashNode) {
-            HashNode hsnode = (HashNode) node;
+        if (node instanceof MapNode) {
+            MapNode hsnode = (MapNode) node;
             if (restPath.isEmpty()) {
-                if (!hsnode.hasChild(sectName)) {
-                    hsnode.putChild(sectName, new ValueNode(hsnode));
+                if (!hsnode.has(sectName)) {
+                    hsnode.put(sectName, new ValueNode(hsnode));
                 }
             } else {
                 try {
                     int i = Integer.parseInt(nextSectName);
-                    if (!hsnode.hasChild(sectName)) {
-                        hsnode.putChild(sectName, internalMakeNode(new ListNode(node), restPath));
+                    if (!hsnode.has(sectName)) {
+                        hsnode.put(sectName, internalMakeNode(new ListNode(node), restPath));
                     } else {
-                        internalMakeNode(hsnode.getChild(sectName), restPath);
+                        internalMakeNode(hsnode.get(sectName), restPath);
                     }
                 } catch (NumberFormatException ignore) {
-                    if (!hsnode.hasChild(sectName)) {
-                        hsnode.putChild(sectName, internalMakeNode(new HashNode(node), restPath));
+                    if (!hsnode.has(sectName)) {
+                        hsnode.put(sectName, internalMakeNode(new MapNode(node), restPath));
                     } else {
-                        internalMakeNode(hsnode.getChild(sectName), restPath);
+                        internalMakeNode(hsnode.get(sectName), restPath);
                     }
                 }
             }
@@ -319,22 +315,22 @@ public class Yaml {
             try {
                 int i = Integer.parseInt(sectName);
                 if (restPath.isEmpty()) {
-                    if (!lsnode.hasItem(i)) {
-                        lsnode.insertItem(i, new ValueNode(lsnode));
+                    if (!lsnode.has(i)) {
+                        lsnode.add(i, new ValueNode(lsnode));
                     }
                 } else {
                     try {
                         i = Integer.parseInt(nextSectName);
-                        if (!lsnode.hasItem(i)) {
-                            lsnode.insertItem(i, internalMakeNode(new ListNode(node), restPath));
+                        if (!lsnode.has(i)) {
+                            lsnode.add(i, internalMakeNode(new ListNode(node), restPath));
                         } else {
-                            internalMakeNode(lsnode.getItem(i), restPath);
+                            internalMakeNode(lsnode.get(i), restPath);
                         }
                     } catch (NumberFormatException ignore) {
-                        if (!lsnode.hasItem(i)) {
-                            lsnode.insertItem(i, internalMakeNode(new HashNode(node), restPath));
+                        if (!lsnode.has(i)) {
+                            lsnode.add(i, internalMakeNode(new MapNode(node), restPath));
                         } else {
-                            internalMakeNode(lsnode.getItem(i), restPath);
+                            internalMakeNode(lsnode.get(i), restPath);
                         }
                     }
                 }
@@ -345,8 +341,8 @@ public class Yaml {
     }
 
     private String internalGet(String path) {
-        Node node = getNode(dequote(path));
-        return node instanceof ValueNode ? ((ValueNode) node).getValue() : null;
+        Node<?> node = getNode(dequote(path));
+        return node instanceof ValueNode ? ((ValueNode) node).get() : null;
     }
 
     private static String[] cut(String string, char delimiter) {

@@ -15,12 +15,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class TinyMapTest {
-
-    private static final Logger logger = Logger.getLogger(TinyMapTest.class.getName());
 
     @Test
     public void simpleTest() {
@@ -29,7 +25,7 @@ public class TinyMapTest {
         builder.put("a", 1);
         builder.put("b", 2);
         builder.put("c", 3);
-        logger.log(Level.INFO, builder.build().toString());
+        assertEquals("{a=1, b=2, c=3}", builder.build().toString());
     }
 
     @Test

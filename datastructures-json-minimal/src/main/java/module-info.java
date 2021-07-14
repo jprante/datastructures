@@ -1,3 +1,3 @@
-module org.xbib.datastructures.json {
-    exports org.xbib.datastructures.json;
+module org.xbib.datastructures.json.minimal {
+    exports org.xbib.datastructures.json.minimal;
 }

@@ -1,7 +1,5 @@
 package org.xbib.datastructures.yaml;
 
-import org.xbib.datastructures.yaml.token.Token;
-import org.xbib.datastructures.yaml.token.TokenType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;

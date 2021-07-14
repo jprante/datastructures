@@ -1,12 +1,6 @@
 package org.xbib.datastructures.yaml;
 
-import org.xbib.datastructures.yaml.model.HashNode;
-import org.xbib.datastructures.yaml.model.ListNode;
-import org.xbib.datastructures.yaml.model.Node;
-import org.xbib.datastructures.yaml.model.ValueNode;
-import org.xbib.datastructures.yaml.model.ValueNode.TextType;
-import org.xbib.datastructures.yaml.token.Token;
-import org.xbib.datastructures.yaml.token.TokenType;
+import org.xbib.datastructures.yaml.ValueNode.TextType;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -19,7 +13,7 @@ public class Parser {
 
     private final List<Token> comments;
 
-    private Node root;
+    private Node<?> root;
 
     private Token token;
 
@@ -32,11 +26,11 @@ public class Parser {
         root = parseNode(null, -1);
     }
 
-    public Node getNode() {
+    public Node<?> getNode() {
         return root;
     }
 
-    private Node parseNode(Node parent, int depth) throws IOException {
+    private Node<?> parseNode(Node<?> parent, int depth) throws IOException {
         if (token == null) {
             token = lexer.next();
             if (token == null) {
@@ -65,14 +59,14 @@ public class Parser {
         }
     }
 
-    private ListNode parseListNode(Node parent, int indent) throws IOException {
+    private ListNode parseListNode(Node<?> parent, int indent) throws IOException {
         ListNode node = new ListNode(parent);
         int cnt = 0;
         while (token != null && token.getDepth() == indent && token.getType() == TokenType.ITEM) {
             token = lexer.next();
             if (token != null) {
                 node.addComments(cnt, collectComments(indent));
-                node.addItem(parseNode(node, indent));
+                node.add(parseNode(node, indent));
             }
             stashComments();
             cnt++;
@@ -80,46 +74,46 @@ public class Parser {
         return node;
     }
 
-    private HashNode parseHashNode(Node parent, int indent) throws IOException {
-        HashNode node = new HashNode(parent);
+    private MapNode parseHashNode(Node<?> parent, int indent) throws IOException {
+        MapNode node = new MapNode(parent);
         while (token != null && token.getDepth() == indent && token.getType() == TokenType.KEY) {
             String key = token.getValue();
             token = lexer.next();
             if (token != null) {
                 node.addComments(key, collectComments(indent));
-                node.putChild(key, parseNode(node, indent));
+                node.put(key, parseNode(node, indent));
             }
             stashComments();
         }
         return node;
     }
 
-    private ValueNode parseValueNode(Node parent, int indent) throws IOException {
+    private ValueNode parseValueNode(Node<?> parent, int indent) throws IOException {
         ValueNode node = new ValueNode(parent);
         node.addComments(collectComments(indent));
         switch (token.getType()) {
             case VALUE_LINE:
                 node.setType(TextType.LINE);
-                node.setValue(token.getValue());
+                node.set(token.getValue());
                 token = lexer.next();
                 break;
             case VALUE_MULTILINE:
                 node.setType(TextType.MULTILINE);
-                node.setValue(token.getValue());
+                node.set(token.getValue());
                 token = lexer.next();
                 break;
             case VALUE_TEXT_PIPE:
                 node.setType(TextType.TEXT);
-                node.setValue(token.getValue());
+                node.set(token.getValue());
                 token = lexer.next();
                 break;
             case VALUE_TEXT_ANGLE:
                 node.setType(TextType.TEXT_ANGLE);
-                node.setValue(token.getValue());
+                node.set(token.getValue());
                 token = lexer.next();
                 break;
             default:
-                node.setValue("");
+                node.set("");
         }
         return node;
     }
