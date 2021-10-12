@@ -25,14 +25,14 @@ public class Reader {
     private static final Map<Character, Character> escapes = new HashMap<Character, Character>();
 
     static {
-        escapes.put(new Character('"'), new Character('"'));
-        escapes.put(new Character('\\'), new Character('\\'));
-        escapes.put(new Character('/'), new Character('/'));
-        escapes.put(new Character('b'), new Character('\b'));
-        escapes.put(new Character('f'), new Character('\f'));
-        escapes.put(new Character('n'), new Character('\n'));
-        escapes.put(new Character('r'), new Character('\r'));
-        escapes.put(new Character('t'), new Character('\t'));
+        escapes.put('"', '"');
+        escapes.put('\\', '\\');
+        escapes.put('/', '/');
+        escapes.put('b', '\b');
+        escapes.put('f', '\f');
+        escapes.put('n', '\n');
+        escapes.put('r', '\r');
+        escapes.put('t', '\t');
     }
 
     private CharacterIterator it;
@@ -272,9 +272,9 @@ public class Reader {
                 if (c == 'u') {
                     add(unicode());
                 } else {
-                    Object value = escapes.get(new Character(c));
+                    Character value = escapes.get(c);
                     if (value != null) {
-                        add(((Character) value).charValue());
+                        add(value);
                     }
                 }
             } else {

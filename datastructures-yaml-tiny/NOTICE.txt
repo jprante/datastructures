@@ -1,0 +1,7 @@
+This is a modfied work of
+
+https://github.com/Kahsolt/IfYaml
+
+as of May, 2021
+
+WTFPL License

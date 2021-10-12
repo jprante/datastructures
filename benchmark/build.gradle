@@ -8,7 +8,7 @@ jmhReport {
 }
 
 dependencies {
-    implementation project(':datastructures-json')
+    implementation project(':datastructures-json-tiny')
     implementation project(':datastructures-json-dsl')
     implementation project(':datastructures-json-flat')
     implementation project(':datastructures-json-iterator')

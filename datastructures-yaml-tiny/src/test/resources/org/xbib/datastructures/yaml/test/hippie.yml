@@ -1,0 +1,10 @@
+de:
+  javahippie:
+    mpadmin:
+      instances:
+        -
+          name: "Bing"
+          uri: "https://bing.com"
+        -
+          name: "Google"
+          uri: "https://www.google.com"

@@ -15,7 +15,7 @@ public class JSONParser {
     public static final int LONG = 2;
     /**
      * Event indicating a JSON number value which has a fractional part or an exponent
-     * and with string length <= 23 chars not including sign.  This covers
+     * and with string length &lt;= 23 chars not including sign.  This covers
      * all representations of normal values for Double.toString().
      */
     public static final int NUMBER = 3;
