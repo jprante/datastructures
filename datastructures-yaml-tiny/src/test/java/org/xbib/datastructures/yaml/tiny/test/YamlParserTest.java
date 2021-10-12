@@ -14,8 +14,6 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -30,7 +28,6 @@ public class YamlParserTest {
         StringWriter writer = new StringWriter();
         yaml.createGenerator(node).generate(writer);
         String s1 = writer.toString();
-        Logger.getAnonymousLogger().log(Level.INFO, "s1 = " + s1);
     }
 
     @Test
@@ -59,7 +56,7 @@ public class YamlParserTest {
 
     @Test
     public void interlibrary() throws Exception {
-        InputStream inputStream = Files.newInputStream(Paths.get("/Users/joerg/.config/interlibrary/test.yaml"));
+        InputStream inputStream = Files.newInputStream(Paths.get(System.getProperty("user.home") + "/.config/interlibrary/test.yaml"));
         roundTrip(inputStream);
     }
 
@@ -75,8 +72,6 @@ public class YamlParserTest {
         writer = new StringWriter();
         yaml.createGenerator(node2).generate(writer);
         String s2 = writer.toString();
-        Logger.getAnonymousLogger().log(Level.INFO, "s1 = " + s1);
-        Logger.getAnonymousLogger().log(Level.INFO, "s2 = " + s2);
         assertEquals(s1, s2);
     }
 }
