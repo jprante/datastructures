@@ -28,6 +28,14 @@ public class JsonBuilder implements Builder {
         this.state = new State(null, 0, Structure.MAP, true);
     }
 
+    public static JsonBuilder builder() {
+        return new JsonBuilder();
+    }
+
+    public static JsonBuilder builder(Writer writer) {
+        return new JsonBuilder(writer);
+    }
+
     @Override
     public Builder beginCollection() throws IOException {
         this.state = new State(state, state.level + 1, Structure.COLLECTION, true);

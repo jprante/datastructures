@@ -3,8 +3,8 @@ package org.xbib.datastructures.yaml.tiny;
 import org.xbib.datastructures.api.Builder;
 import org.xbib.datastructures.api.ByteSizeValue;
 import org.xbib.datastructures.api.TimeValue;
-
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.time.Instant;
@@ -20,6 +20,10 @@ public class YamlBuilder implements Builder {
 
     private State state;
 
+    public YamlBuilder() {
+        this(new StringWriter());
+    }
+
     public YamlBuilder(Writer writer) {
         this(writer, 2);
     }
@@ -28,6 +32,14 @@ public class YamlBuilder implements Builder {
         this.writer = writer;
         this.indent = indent;
         this.state = new State(null, 0, Structure.MAP, false);
+    }
+
+    public static YamlBuilder builder() {
+        return new YamlBuilder();
+    }
+
+    public static YamlBuilder builder(Writer writer) {
+        return new YamlBuilder(writer);
     }
 
     @Override
