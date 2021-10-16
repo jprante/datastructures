@@ -1,12 +1,22 @@
 package org.xbib.datastructures.json.tiny;
 
-import org.xbib.datastructures.api.*;
-
+import org.xbib.datastructures.api.Builder;
+import org.xbib.datastructures.api.ByteSizeValue;
+import org.xbib.datastructures.api.DataStructure;
+import org.xbib.datastructures.api.Generator;
+import org.xbib.datastructures.api.Node;
+import org.xbib.datastructures.api.Parser;
+import org.xbib.datastructures.api.TimeValue;
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.Instant;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class Json implements DataStructure {
+
+    private static final Json INSTANCE = new Json();
 
     private final char separator;
 
@@ -23,6 +33,15 @@ public class Json implements DataStructure {
     public Json(Node<?> root, char separator) {
         this.root = root;
         this.separator = separator;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> toMap(String yaml) throws IOException {
+        return (Map<String, Object>) INSTANCE.createParser().parse(new StringReader(yaml)).get();
+    }
+
+    public static String toString(Map<String, Object> map) throws IOException {
+        return INSTANCE.createBuilder().buildMap(map).build();
     }
 
     @Override

@@ -6,6 +6,7 @@ import org.xbib.datastructures.json.tiny.StreamParser;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -108,4 +109,108 @@ public class JsonBuilderTest {
         jsonBuilder.buildMap(Map.of("a", "b"));
         assertEquals("{\"a\":\"b\"}", jsonBuilder.build());
     }
+
+    @Test
+    public void testKeyValue() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.beginMap();
+        jsonBuilder.buildKey("a");
+        jsonBuilder.buildValue("b");
+        // test comma separation
+        jsonBuilder.buildKey("c");
+        jsonBuilder.buildValue("d");
+        jsonBuilder.endMap();
+        assertEquals("{\"a\":\"b\",\"c\":\"d\"}", jsonBuilder.build());
+    }
+
+    @Test
+    public void testMapBuild() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.beginMap();
+        jsonBuilder.buildKey("map");
+        // buildMap is wrapped with '{' and '}'
+        jsonBuilder.buildMap(Map.of("a", "b"));
+        jsonBuilder.endMap();
+        assertEquals("{\"map\":{\"a\":\"b\"}}", jsonBuilder.build());
+    }
+
+    @Test
+    public void testBeginMapBuild() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.beginMap();
+        jsonBuilder.beginMap("map");
+        // buildMap is not wrapped with '{' and '}'
+        jsonBuilder.buildMap(Map.of("a", "b"));
+        jsonBuilder.endMap();
+        jsonBuilder.endMap();
+        assertEquals("{\"map\":{\"a\":\"b\"}}", jsonBuilder.build());
+    }
+
+    @Test
+    public void testMapOfCollections() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.beginMap();
+        jsonBuilder.beginMap("map");
+        jsonBuilder.collection("a", Arrays.asList("b", "c"));
+        // test comma separation
+        jsonBuilder.collection("d", Arrays.asList("e", "f"));
+        jsonBuilder.endMap();
+        jsonBuilder.endMap();
+        assertEquals("{\"map\":{\"a\":[\"b\",\"c\"],\"d\":[\"e\",\"f\"]}}", jsonBuilder.build());
+    }
+
+    @Test
+    public void testMapOfEmptyCollections() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.beginMap();
+        jsonBuilder.beginMap("map");
+        jsonBuilder.collection("a", List.of());
+        // test comma separation
+        jsonBuilder.collection("b", List.of());
+        jsonBuilder.endMap();
+        jsonBuilder.endMap();
+        assertEquals("{\"map\":{\"a\":[],\"b\":[]}}", jsonBuilder.build());
+    }
+
+    @Test
+    public void testCollectionOfMaps() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.beginMap();
+        jsonBuilder.beginCollection("collection");
+        jsonBuilder.buildMap(Map.of("a", "b"));
+        // test comma separation
+        jsonBuilder.buildMap(Map.of("c", "d"));
+        jsonBuilder.endCollection();
+        jsonBuilder.endMap();
+        assertEquals("{\"collection\":[{\"a\":\"b\"},{\"c\":\"d\"}]}", jsonBuilder.build());
+    }
+
+    @Test
+    public void testCollectionOfEmptyMaps() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.beginMap();
+        jsonBuilder.beginCollection("collection");
+        jsonBuilder.buildMap(Map.of());
+        // test comma separation
+        jsonBuilder.buildMap(Map.of());
+        jsonBuilder.endCollection();
+        jsonBuilder.endMap();
+        assertEquals("{\"collection\":[{},{}]}", jsonBuilder.build());
+    }
+
+    @Test
+    public void testCopy() throws Exception {
+        JsonBuilder jsonBuilder1 = new JsonBuilder();
+        jsonBuilder1.buildMap(Map.of("a", "b"));
+        JsonBuilder jsonBuilder2 = new JsonBuilder();
+        jsonBuilder2.buildMap(Map.of("c", "d"));
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.beginCollection();
+        jsonBuilder.copy(jsonBuilder1);
+        // test comma separation
+        jsonBuilder.copy(jsonBuilder2);
+        jsonBuilder.endCollection();
+        assertEquals("[{\"a\":\"b\"},{\"c\":\"d\"}]", jsonBuilder.build());
+    }
+
 }

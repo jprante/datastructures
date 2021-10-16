@@ -3,11 +3,8 @@ package org.xbib.datastructures.json.tiny;
 import org.xbib.datastructures.api.Builder;
 import org.xbib.datastructures.api.ByteSizeValue;
 import org.xbib.datastructures.api.TimeValue;
-
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.UncheckedIOException;
-import java.io.Writer;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
@@ -15,31 +12,31 @@ import java.util.Objects;
 
 public class JsonBuilder implements Builder {
 
-    private final Writer writer;
+    private final Appendable appendable;
 
     private State state;
 
     public JsonBuilder() {
-        this(new StringWriter());
+        this(new StringBuilder());
     }
 
-    public JsonBuilder(Writer writer) {
-        this.writer = writer;
-        this.state = new State(null, 0, Structure.MAP, true);
+    public JsonBuilder(Appendable appendable) {
+        this.appendable = appendable;
+        this.state = new State(null, 0, Structure.DOCSTART, true);
     }
 
     public static JsonBuilder builder() {
         return new JsonBuilder();
     }
 
-    public static JsonBuilder builder(Writer writer) {
-        return new JsonBuilder(writer);
+    public static JsonBuilder builder(Appendable appendable) {
+        return new JsonBuilder(appendable);
     }
 
     @Override
     public Builder beginCollection() throws IOException {
         this.state = new State(state, state.level + 1, Structure.COLLECTION, true);
-        writer.write('[');
+        appendable.append('[');
         return this;
     }
 
@@ -48,7 +45,7 @@ public class JsonBuilder implements Builder {
         if (state.structure != Structure.COLLECTION) {
             throw new JsonException("no array to close");
         }
-        writer.write(']');
+        appendable.append(']');
         this.state = state != null ? state.parent : null;
         return this;
     }
@@ -56,25 +53,30 @@ public class JsonBuilder implements Builder {
     @Override
     public Builder beginMap() throws IOException {
         this.state = new State(state, state.level + 1, Structure.MAP, true);
-        writer.write('{');
+        appendable.append('{');
         return this;
     }
 
     @Override
     public Builder endMap() throws IOException {
-        if (state.structure != Structure.MAP) {
+        if (state.structure != Structure.MAP && state.structure != Structure.KEY) {
             throw new JsonException("no object to close");
         }
-        writer.write('}');
+        appendable.append('}');
         this.state = state != null ? state.parent : null;
         return this;
     }
 
-
     @Override
     public Builder buildMap(Map<String, Object> map) throws IOException {
         Objects.requireNonNull(map);
-        beginMap();
+        if (state.structure == Structure.COLLECTION) {
+            beginArrayValue(map);
+        }
+        boolean wrap = state.structure != Structure.MAP;
+        if (wrap) {
+            beginMap();
+        }
         map.forEach((k, v) -> {
             try {
                 buildKey(k);
@@ -83,12 +85,17 @@ public class JsonBuilder implements Builder {
                 throw new UncheckedIOException(e);
             }
         });
-        endMap();
+        if (wrap) {
+            endMap();
+        }
+        if (state.structure == Structure.COLLECTION) {
+            endArrayValue(map);
+        }
         return this;
     }
 
     @Override
-    public Builder buildCollection(Collection<Object> collection) throws IOException {
+    public Builder buildCollection(Collection<?> collection) throws IOException {
         Objects.requireNonNull(collection);
         beginCollection();
         collection.forEach(v -> {
@@ -105,7 +112,7 @@ public class JsonBuilder implements Builder {
     @SuppressWarnings("unchecked")
     @Override
     public Builder buildValue(Object object) throws IOException {
-        if (state.structure == Structure.MAP) {
+        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
             beginValue(object);
         } else if (state.structure == Structure.COLLECTION) {
             beginArrayValue(object);
@@ -142,7 +149,7 @@ public class JsonBuilder implements Builder {
         } else {
             throw new IllegalArgumentException("unable to write object class " + object.getClass());
         }
-        if (state.structure == Structure.MAP) {
+        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
             endValue(object);
         } else if (state.structure == Structure.COLLECTION) {
             endArrayValue(object);
@@ -152,42 +159,68 @@ public class JsonBuilder implements Builder {
 
     @Override
     public Builder buildKey(CharSequence string) throws IOException {
-        if (state.structure == Structure.MAP) {
+        if (state.structure == Structure.COLLECTION) {
+            beginArrayValue(string);
+        }
+        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
             beginKey(string != null ? string.toString() : null);
         }
         buildString(string, true);
-        if (state.structure == Structure.MAP) {
+        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
             endKey(string != null ? string.toString() : null);
         }
+        state.structure = Structure.KEY;
         return this;
     }
 
     @Override
     public Builder buildNull() throws IOException {
-        if (state.structure == Structure.MAP) {
+        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
             beginValue(null);
         } else if (state.structure == Structure.COLLECTION) {
             beginArrayValue(null);
         }
         buildString("null", false);
+        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
+            endValue(null);
+        } else if (state.structure == Structure.COLLECTION) {
+            endArrayValue(null);
+        }
+        return this;
+    }
+
+    @Override
+    public Builder copy(Builder builder) throws IOException {
+        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
+            beginValue(null);
+        } else if (state.structure == Structure.COLLECTION) {
+            beginArrayValue(null);
+        }
+        appendable.append(builder.build());
+        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
+            endValue(null);
+        }
+        if (state.structure == Structure.COLLECTION) {
+            endArrayValue(null);
+        }
         return this;
     }
 
     @Override
     public String build() {
-        return writer.toString();
+        return appendable.toString();
     }
 
     private void beginKey(String k) throws IOException {
         if (state.first) {
             state.first = false;
         } else {
-            writer.write(",");
+            appendable.append(",");
         }
     }
 
     private void endKey(String k) throws IOException {
-        writer.write(":");
+        appendable.append(":");
     }
 
     private void beginValue(Object v) {
@@ -200,7 +233,7 @@ public class JsonBuilder implements Builder {
         if (state.first) {
             state.first = false;
         } else {
-            writer.write(",");
+            appendable.append(",");
         }
     }
 
@@ -220,10 +253,10 @@ public class JsonBuilder implements Builder {
     }
 
     private void buildString(CharSequence string, boolean escape) throws IOException {
-        writer.write(escape ? escapeString(string) : string.toString());
+        appendable.append(escape ? escapeString(string) : string);
     }
 
-    private String escapeString(CharSequence string) {
+    private CharSequence escapeString(CharSequence string) {
         StringBuilder sb = new StringBuilder();
         sb.append('"');
         int start = 0;
@@ -232,17 +265,17 @@ public class JsonBuilder implements Builder {
             char c = string.charAt(i);
             if (c == '"' || c < 32 || c >= 127 || c == '\\') {
                 if (start < i) {
-                    sb.append(string.toString(), start, i - start);
+                    sb.append(string, start, i - start);
                 }
                 start = i;
                 sb.append(escapeCharacter(c));
             }
         }
         if (start < l) {
-            sb.append(string.toString(), start, l - start);
+            sb.append(string, start, l - start);
         }
         sb.append('"');
-        return sb.toString();
+        return sb;
     }
 
     private static String escapeCharacter(char c) {
@@ -264,7 +297,7 @@ public class JsonBuilder implements Builder {
         return "\\u0000".substring(0, 6 - hex.length()) + hex;
     }
 
-    private enum Structure { MAP, COLLECTION };
+    private enum Structure { DOCSTART, MAP, KEY, COLLECTION };
 
     private static class State {
         State parent;

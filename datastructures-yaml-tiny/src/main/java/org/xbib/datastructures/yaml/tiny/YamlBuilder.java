@@ -4,9 +4,7 @@ import org.xbib.datastructures.api.Builder;
 import org.xbib.datastructures.api.ByteSizeValue;
 import org.xbib.datastructures.api.TimeValue;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.UncheckedIOException;
-import java.io.Writer;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
@@ -14,22 +12,22 @@ import java.util.Objects;
 
 public class YamlBuilder implements Builder {
 
-    public final Writer writer;
+    public final Appendable appendable;
 
     private final int indent;
 
     private State state;
 
     public YamlBuilder() {
-        this(new StringWriter());
+        this(new StringBuilder());
     }
 
-    public YamlBuilder(Writer writer) {
-        this(writer, 2);
+    public YamlBuilder(Appendable appendable) {
+        this(appendable, 2);
     }
 
-    public YamlBuilder(Writer writer, int indent) {
-        this.writer = writer;
+    public YamlBuilder(Appendable appendable, int indent) {
+        this.appendable = appendable;
         this.indent = indent;
         this.state = new State(null, 0, Structure.MAP, false);
     }
@@ -38,8 +36,8 @@ public class YamlBuilder implements Builder {
         return new YamlBuilder();
     }
 
-    public static YamlBuilder builder(Writer writer) {
-        return new YamlBuilder(writer);
+    public static YamlBuilder builder(Appendable appendable) {
+        return new YamlBuilder(appendable);
     }
 
     @Override
@@ -89,7 +87,7 @@ public class YamlBuilder implements Builder {
     }
 
     @Override
-    public Builder buildCollection(Collection<Object> collection) {
+    public Builder buildCollection(Collection<?> collection) {
         Objects.requireNonNull(collection);
         beginCollection();
         collection.forEach(v -> {
@@ -171,8 +169,15 @@ public class YamlBuilder implements Builder {
     }
 
     @Override
+    public Builder copy(Builder builder) throws IOException {
+        // TODO: no correct indent yet for copied yaml
+        buildValue(builder.build());
+        return this;
+    }
+
+    @Override
     public String build() {
-        return writer.toString();
+        return appendable.toString();
     }
 
     private void buildNumber(Number number) throws IOException {
@@ -188,7 +193,8 @@ public class YamlBuilder implements Builder {
     }
 
     private void buildString(CharSequence string, boolean escape) throws IOException {
-        String value = escape ? escapeString(string) : string.toString();
+        CharSequence charSequence = escape ? escapeString(string) : string;
+        String value = charSequence.toString();
         if (!((value.startsWith("'") && value.endsWith("'")) || (value.startsWith("\"") && value.endsWith("\""))) &&
                 value.matches(".*[?\\-#:>|$%&{}\\[\\]]+.*|[ ]+")) {
             if (value.contains("\"")) {
@@ -197,7 +203,7 @@ public class YamlBuilder implements Builder {
                 value = "\"" + value + "\"";
             }
         }
-        writer.write(value);
+        appendable.append(value);
     }
 
     private void beginKey(String k) throws IOException {
@@ -205,11 +211,11 @@ public class YamlBuilder implements Builder {
             state.parent.item = false;
             return;
         }
-        writer.write(" ".repeat((state.level - 1) * indent));
+        appendable.append(" ".repeat((state.level - 1) * indent));
     }
 
     private void endKey(String k) throws IOException {
-        writer.write(": ");
+        appendable.append(": ");
     }
 
     private void beginValue(Object v) throws IOException {
@@ -236,8 +242,8 @@ public class YamlBuilder implements Builder {
         if (v instanceof Collection) {
             return;
         }
-        writer.write(" ".repeat((state.level - 1) * indent));
-        writer.write("- ");
+        appendable.append(" ".repeat((state.level - 1) * indent));
+        appendable.append("- ");
         state.item = true;
     }
 
@@ -252,10 +258,10 @@ public class YamlBuilder implements Builder {
     }
 
     private void writeLn() throws IOException{
-        writer.write(System.lineSeparator());
+        appendable.append(System.lineSeparator());
     }
 
-    private String escapeString(CharSequence string) {
+    private CharSequence escapeString(CharSequence string) {
         StringBuilder sb = new StringBuilder();
         int start = 0;
         int l = string.length();
@@ -263,16 +269,16 @@ public class YamlBuilder implements Builder {
             char c = string.charAt(i);
             if (c == '"' || c < 32 || c >= 127 || c == '\\') {
                 if (start < i) {
-                    sb.append(string.toString(), start, i - start);
+                    sb.append(string, start, i - start);
                 }
                 start = i;
                 sb.append(escapeCharacter(c));
             }
         }
         if (start < l) {
-            sb.append(string.toString(), start, l - start);
+            sb.append(string, start, l - start);
         }
-        return sb.toString();
+        return sb;
     }
 
     private static String escapeCharacter(char c) {

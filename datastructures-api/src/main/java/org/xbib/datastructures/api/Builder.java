@@ -16,7 +16,7 @@ public interface Builder {
 
     Builder buildMap(Map<String, Object> map) throws IOException;
 
-    Builder buildCollection(Collection<Object> collection) throws IOException;
+    Builder buildCollection(Collection<?> collection) throws IOException;
 
     Builder buildKey(CharSequence key) throws IOException;
 
@@ -24,13 +24,39 @@ public interface Builder {
 
     Builder buildNull() throws IOException;
 
-    default Builder buildIfNotNull(CharSequence key, Object value) throws IOException {
+    default Builder field(CharSequence key, Object value) throws IOException {
+        buildKey(key);
+        buildValue(value);
+        return this;
+    }
+
+    default Builder fieldIfNotNull(CharSequence key, Object value) throws IOException {
         if (value != null){
             buildKey(key);
             buildValue(value);
         }
         return this;
     }
+
+    default Builder collection(CharSequence key, Collection<?> value) throws IOException {
+        buildKey(key);
+        buildValue(value);
+        return this;
+    }
+
+    default Builder beginMap(CharSequence key) throws IOException {
+        buildKey(key);
+        beginMap();
+        return this;
+    }
+
+    default Builder beginCollection(CharSequence key) throws IOException {
+        buildKey(key);
+        beginCollection();
+        return this;
+    }
+
+    Builder copy(Builder builder) throws IOException;
 
     String build();
 }

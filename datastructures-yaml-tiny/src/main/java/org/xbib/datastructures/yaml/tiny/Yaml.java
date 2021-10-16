@@ -3,12 +3,17 @@ package org.xbib.datastructures.yaml.tiny;
 import org.xbib.datastructures.api.*;
 import org.xbib.datastructures.api.Builder;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.Instant;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class Yaml implements DataStructure {
 
+    private static final Yaml INSTANCE = new Yaml();
+;
     private final char separator;
 
     private Node<?> root;
@@ -24,6 +29,15 @@ public class Yaml implements DataStructure {
     public Yaml(Node<?> root, char separator) {
         this.root = root;
         this.separator = separator;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> toMap(String yaml) throws IOException {
+        return (Map<String, Object>) INSTANCE.createParser().parse(new StringReader(yaml)).get();
+    }
+
+    public static String toString(Map<String, Object> map) throws IOException {
+        return INSTANCE.createBuilder().buildMap(map).build();
     }
 
     @Override
