@@ -195,6 +195,15 @@ public class JsonBuilderTest {
     }
 
     @Test
+    public void testListOfMapAsField() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.beginMap();
+        jsonBuilder.field("collection", List.of(Map.of("a","b"), Map.of("c", "d")));
+        jsonBuilder.endMap();
+        assertEquals("{\"collection\":[{\"a\":\"b\"},{\"c\":\"d\"}]}", jsonBuilder.build());
+    }
+
+    @Test
     public void testCollectionOfEmptyMaps() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.beginMap();

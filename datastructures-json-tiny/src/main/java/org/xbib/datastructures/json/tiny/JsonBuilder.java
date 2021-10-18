@@ -112,6 +112,13 @@ public class JsonBuilder implements Builder {
     @SuppressWarnings("unchecked")
     @Override
     public Builder buildValue(Object object) throws IOException {
+        if (object instanceof Map) {
+            buildMap((Map<String, Object>) object);
+            return this;
+        } else if (object instanceof Collection) {
+            buildCollection((Collection<Object>) object);
+            return this;
+        }
         if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
             beginValue(object);
         } else if (state.structure == Structure.COLLECTION) {
@@ -119,11 +126,6 @@ public class JsonBuilder implements Builder {
         }
         if (object == null) {
             buildNull();
-            return this;
-        } else if (object instanceof Map) {
-            buildMap((Map<String, Object>) object);
-        } else if (object instanceof Collection) {
-            buildCollection((Collection<Object>) object);
         } else if (object instanceof CharSequence) {
             buildString((CharSequence) object, true);
         } else if (object instanceof Boolean) {
@@ -161,8 +163,7 @@ public class JsonBuilder implements Builder {
     public Builder buildKey(CharSequence string) throws IOException {
         if (state.structure == Structure.COLLECTION) {
             beginArrayValue(string);
-        }
-        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
+        } else if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
             beginKey(string != null ? string.toString() : null);
         }
         buildString(string, true);

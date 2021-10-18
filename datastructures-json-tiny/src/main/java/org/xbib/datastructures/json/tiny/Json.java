@@ -13,6 +13,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.time.Instant;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class Json implements DataStructure {
@@ -37,11 +38,14 @@ public class Json implements DataStructure {
     }
 
     public static String toString(Map<String, Object> map) throws IOException {
-        return INSTANCE.createBuilder().buildMap(map).build();
+        return map != null ? INSTANCE.createBuilder().buildMap(map).build() : null;
     }
 
     @SuppressWarnings("unchecked")
     public static Map<String, Object> toMap(String json) {
+        if (json == null) {
+            return null;
+        }
         PlainParser parser = new PlainParser();
         parser.parse(json);
         Object object = parser.getResult();
@@ -52,6 +56,7 @@ public class Json implements DataStructure {
     }
 
     public static Map<String, Object> toMap(Reader reader) throws IOException {
+        Objects.requireNonNull(reader);
         // buffered reader is required for mark() support
         try (BufferedReader bufferedReader = new BufferedReader(reader)){
             return JsonGenerator.toMap(INSTANCE.createParser().parse(bufferedReader));
