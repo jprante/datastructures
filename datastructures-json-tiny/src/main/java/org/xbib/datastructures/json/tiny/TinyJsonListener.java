@@ -17,10 +17,6 @@ public class TinyJsonListener implements JsonResult {
 
     private final ValueNode FALSE_NODE = new ValueNode(Boolean.FALSE);
 
-    public Deque<Node<?>> getStack() {
-        return stack;
-    }
-
     @Override
     public Node<?> getResult() {
         return node;

@@ -7,11 +7,9 @@ import org.xbib.datastructures.api.Generator;
 import org.xbib.datastructures.api.Node;
 import org.xbib.datastructures.api.Parser;
 import org.xbib.datastructures.api.TimeValue;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.Instant;
 import java.util.Map;
@@ -38,8 +36,19 @@ public class Json implements DataStructure {
         this.separator = separator;
     }
 
-    public static Map<String, Object> toMap(String json) throws IOException {
-        return toMap(new StringReader(json));
+    public static String toString(Map<String, Object> map) throws IOException {
+        return INSTANCE.createBuilder().buildMap(map).build();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> toMap(String json) {
+        PlainParser parser = new PlainParser();
+        parser.parse(json);
+        Object object = parser.getResult();
+        if (object instanceof Map) {
+            return (Map<String, Object>) parser.getResult();
+        }
+        throw new JsonException("unexpected, Json.toMap got not a map instance: " + object.getClass());
     }
 
     public static Map<String, Object> toMap(Reader reader) throws IOException {
@@ -47,10 +56,6 @@ public class Json implements DataStructure {
         try (BufferedReader bufferedReader = new BufferedReader(reader)){
             return JsonGenerator.toMap(INSTANCE.createParser().parse(bufferedReader));
         }
-    }
-
-    public static String toString(Map<String, Object> map) throws IOException {
-        return INSTANCE.createBuilder().buildMap(map).build();
     }
 
     @Override
