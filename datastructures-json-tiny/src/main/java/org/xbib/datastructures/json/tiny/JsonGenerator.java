@@ -34,6 +34,11 @@ public class JsonGenerator implements Generator {
         return (Map<String, Object>) internalMap(root);
     }
 
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> toModifiableMap(Node<?> root) {
+        return (Map<String, Object>) internalModifiableMap(root);
+    }
+
     private void internalWrite(Node<?> curnode) throws IOException {
         if (curnode instanceof ValueNode) {
             ValueNode valueNode = (ValueNode) curnode;
@@ -75,6 +80,29 @@ public class JsonGenerator implements Generator {
                 list.add(internalMap(node));
             }
             return list.build();
+        } else {
+            return null;
+        }
+    }
+
+    private static Object internalModifiableMap(Node<?> curnode) {
+        if (curnode instanceof ValueNode) {
+            ValueNode valueNode = (ValueNode) curnode;
+            return valueNode.get();
+        } else if (curnode instanceof MapNode) {
+            MapNode mapNode = (MapNode) curnode;
+            TinyMap.Builder<String, Object> map = TinyMap.builder();
+            for (Map.Entry<CharSequence, Node<?>> e : mapNode.get().entrySet()) {
+                map.put(e.getKey().toString(), internalMap(e.getValue()));
+            }
+            return map;
+        } else if (curnode instanceof ListNode) {
+            ListNode listNode = (ListNode) curnode;
+            TinyList.Builder<Object> list = TinyList.builder();
+            for (Node<?> node : listNode.get()) {
+                list.add(internalMap(node));
+            }
+            return list;
         } else {
             return null;
         }

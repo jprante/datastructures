@@ -57,9 +57,16 @@ public class Json implements DataStructure {
 
     public static Map<String, Object> toMap(Reader reader) throws IOException {
         Objects.requireNonNull(reader);
+        StringWriter writer = new StringWriter();
+        reader.transferTo(writer);
+        return toMap(writer.toString());
+    }
+
+    public static Map<String, Object> toModifiableMap(Reader reader) throws IOException {
+        Objects.requireNonNull(reader);
         // buffered reader is required for mark() support
         try (BufferedReader bufferedReader = new BufferedReader(reader)){
-            return JsonGenerator.toMap(INSTANCE.createParser().parse(bufferedReader));
+            return JsonGenerator.toModifiableMap(INSTANCE.createParser().parse(bufferedReader));
         }
     }
 
