@@ -6,10 +6,12 @@ import org.xbib.datastructures.api.DataStructure;
 import org.xbib.datastructures.tiny.TinyMap;
 import org.xbib.datastructures.yaml.tiny.Yaml;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class YamlBuilderTest {
 
@@ -103,5 +105,13 @@ public class YamlBuilderTest {
                 "  c: d\n" +
                 "- e: f\n" +
                 "  g: h\n", builder.build());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testYamlToMap() throws IOException {
+        Map<String, Object> map = Yaml.toMap("map:\n  a: b\n");
+        assertTrue(map.get("map") instanceof Map);
+        assertEquals("b", ((Map<String, Object>) map.get("map")).get("a"));
     }
 }

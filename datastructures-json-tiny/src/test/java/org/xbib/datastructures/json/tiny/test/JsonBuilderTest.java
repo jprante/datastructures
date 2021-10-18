@@ -1,6 +1,7 @@
 package org.xbib.datastructures.json.tiny.test;
 
 import org.junit.jupiter.api.Test;
+import org.xbib.datastructures.json.tiny.Json;
 import org.xbib.datastructures.json.tiny.JsonBuilder;
 import org.xbib.datastructures.json.tiny.StreamParser;
 
@@ -11,8 +12,16 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JsonBuilderTest {
+
+    @Test
+    public void testUmlautEncoding() throws IOException{
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.buildMap(Map.of("Hello", "Jörg"));
+        assertEquals("{\"Hello\":\"Jörg\"}", jsonBuilder.build());
+    }
 
     @Test
     public void testObjectStrFromMap() throws IOException {
@@ -213,4 +222,11 @@ public class JsonBuilderTest {
         assertEquals("[{\"a\":\"b\"},{\"c\":\"d\"}]", jsonBuilder.build());
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testJsonToMap() throws IOException {
+        Map<String, Object> map = Json.toMap("{\"map\":{\"a\":\"b\"}}");
+        assertTrue(map.get("map") instanceof Map);
+        assertEquals("b", ((Map<String, Object>) map.get("map")).get("a"));
+    }
 }

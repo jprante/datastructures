@@ -7,7 +7,10 @@ import org.xbib.datastructures.api.Generator;
 import org.xbib.datastructures.api.Node;
 import org.xbib.datastructures.api.Parser;
 import org.xbib.datastructures.api.TimeValue;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.Instant;
@@ -35,9 +38,15 @@ public class Json implements DataStructure {
         this.separator = separator;
     }
 
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> toMap(String yaml) throws IOException {
-        return (Map<String, Object>) INSTANCE.createParser().parse(new StringReader(yaml)).get();
+    public static Map<String, Object> toMap(String json) throws IOException {
+        return toMap(new StringReader(json));
+    }
+
+    public static Map<String, Object> toMap(Reader reader) throws IOException {
+        // buffered reader is required for mark() support
+        try (BufferedReader bufferedReader = new BufferedReader(reader)){
+            return JsonGenerator.toMap(INSTANCE.createParser().parse(bufferedReader));
+        }
     }
 
     public static String toString(Map<String, Object> map) throws IOException {

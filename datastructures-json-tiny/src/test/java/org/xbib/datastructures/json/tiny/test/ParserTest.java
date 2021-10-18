@@ -9,29 +9,33 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ParserTest {
 
     @Test
     public void testStringParser() throws IOException {
         try (InputStream inputStream = ParserTest.class.getResourceAsStream("/org/xbib/datastructures/json/tiny/test/test.json")) {
-            byte [] b = inputStream.readAllBytes();
-            String string = new String(b, StandardCharsets.UTF_8);
-            StringParser stringParser = new StringParser(new TinyJsonListener());
-            stringParser.parse(string);
-            Logger.getLogger("").log(Level.INFO, stringParser.getNode().get().toString());
-            stringParser.parse(string);
-            Logger.getLogger("").log(Level.INFO, stringParser.getNode().get().toString());
+            if (inputStream != null) {
+                byte[] b = inputStream.readAllBytes();
+                String string = new String(b, StandardCharsets.UTF_8);
+                StringParser stringParser = new StringParser(new TinyJsonListener());
+                stringParser.parse(string);
+                assertEquals("{a=b, c=d, e=[f, g], h={i={j=k}}, l=null, m=true, n=false, o=0, p=1, q=-1, r=0.0, s=1.0, t=2.1, u=-1.0, v=-2.1, w=, x=₫, y=Jörg}",
+                        stringParser.getNode().get().toString());
+            }
         }
     }
 
     @Test
     public void testStreamParser() throws IOException {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(ParserTest.class.getResourceAsStream("/org/xbib/datastructures/json/tiny/test/test.json")))) {
-            StreamParser streamParser = new StreamParser(new TinyJsonListener());
-            Logger.getLogger("").log(Level.INFO, streamParser.parse(reader).get().toString());
+        InputStream inputStream = ParserTest.class.getResourceAsStream("/org/xbib/datastructures/json/tiny/test/test.json");
+        if (inputStream != null) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+                StreamParser streamParser = new StreamParser(new TinyJsonListener());
+                assertEquals("{a=b, c=d, e=[f, g], h={i={j=k}}, l=null, m=true, n=false, o=0, p=1, q=-1, r=0.0, s=1.0, t=2.1, u=-1.0, v=-2.1, w=, x=₫, y=Jörg}", streamParser.parse(reader).get().toString());
+            }
         }
     }
 }

@@ -3,7 +3,9 @@ package org.xbib.datastructures.yaml.tiny;
 import org.xbib.datastructures.api.*;
 import org.xbib.datastructures.api.Builder;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.Instant;
@@ -31,9 +33,15 @@ public class Yaml implements DataStructure {
         this.separator = separator;
     }
 
-    @SuppressWarnings("unchecked")
     public static Map<String, Object> toMap(String yaml) throws IOException {
-        return (Map<String, Object>) INSTANCE.createParser().parse(new StringReader(yaml)).get();
+        return toMap(new StringReader(yaml));
+    }
+
+    public static Map<String, Object> toMap(Reader reader) throws IOException {
+        // buffered reader is required for mark() support
+        try (BufferedReader bufferedReader = new BufferedReader(reader)){
+            return YamlGenerator.toMap(INSTANCE.createParser().parse(bufferedReader));
+        }
     }
 
     public static String toString(Map<String, Object> map) throws IOException {

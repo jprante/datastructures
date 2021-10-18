@@ -2,6 +2,8 @@ package org.xbib.datastructures.yaml.tiny;
 
 import org.xbib.datastructures.api.Generator;
 import org.xbib.datastructures.api.Node;
+import org.xbib.datastructures.tiny.TinyList;
+import org.xbib.datastructures.tiny.TinyMap;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -25,6 +27,11 @@ public class YamlGenerator implements Generator  {
         this.root = root;
         this.writer = writer;
         this.indent = indent;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> toMap(Node<?> root) {
+        return (Map<String, Object>) internalMap(root);
     }
 
     @Override
@@ -155,5 +162,29 @@ public class YamlGenerator implements Generator  {
             }
         }
         return sb.toString();
+    }
+
+
+    private static Object internalMap(Node<?> curnode) {
+        if (curnode instanceof ValueNode) {
+            ValueNode valueNode = (ValueNode) curnode;
+            return valueNode.get();
+        } else if (curnode instanceof MapNode) {
+            MapNode mapNode = (MapNode) curnode;
+            TinyMap.Builder<String, Object> map = TinyMap.builder();
+            for (Map.Entry<CharSequence, Node<?>> e : mapNode.get().entrySet()) {
+                map.put(e.getKey().toString(), internalMap(e.getValue()));
+            }
+            return map.build();
+        } else if (curnode instanceof ListNode) {
+            ListNode listNode = (ListNode) curnode;
+            TinyList.Builder<Object> list = TinyList.builder();
+            for (Node<?> node : listNode.get()) {
+                list.add(internalMap(node));
+            }
+            return list.build();
+        } else {
+            return null;
+        }
     }
 }

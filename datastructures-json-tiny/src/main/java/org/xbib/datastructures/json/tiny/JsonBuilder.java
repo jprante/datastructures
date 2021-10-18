@@ -263,16 +263,16 @@ public class JsonBuilder implements Builder {
         int l = string.length();
         for (int i = 0; i < l; i++) {
             char c = string.charAt(i);
-            if (c == '"' || c < 32 || c >= 127 || c == '\\') {
-                if (start < i) {
-                    sb.append(string, start, i - start);
+            if (c == '"' || c == '\\' || c < 32) {
+                if (i > start) {
+                    sb.append(string, start, i);
                 }
-                start = i;
+                start = i + 1;
                 sb.append(escapeCharacter(c));
             }
         }
-        if (start < l) {
-            sb.append(string, start, l - start);
+        if (l > start) {
+            sb.append(string, start, l);
         }
         sb.append('"');
         return sb;
