@@ -52,6 +52,9 @@ public class JsonBuilder implements Builder {
 
     @Override
     public Builder beginMap() throws IOException {
+        if (state.structure == Structure.COLLECTION) {
+            beginArrayValue();
+        }
         this.state = new State(state, state.level + 1, Structure.MAP, true);
         appendable.append('{');
         return this;
@@ -70,9 +73,6 @@ public class JsonBuilder implements Builder {
     @Override
     public Builder buildMap(Map<String, Object> map) throws IOException {
         Objects.requireNonNull(map);
-        if (state.structure == Structure.COLLECTION) {
-            beginArrayValue(map);
-        }
         boolean wrap = state.structure != Structure.MAP;
         if (wrap) {
             beginMap();
@@ -87,9 +87,6 @@ public class JsonBuilder implements Builder {
         });
         if (wrap) {
             endMap();
-        }
-        if (state.structure == Structure.COLLECTION) {
-            endArrayValue(map);
         }
         return this;
     }
@@ -119,10 +116,8 @@ public class JsonBuilder implements Builder {
             buildCollection((Collection<Object>) object);
             return this;
         }
-        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
-            beginValue(object);
-        } else if (state.structure == Structure.COLLECTION) {
-            beginArrayValue(object);
+        if (state.structure == Structure.COLLECTION) {
+            beginArrayValue();
         }
         if (object == null) {
             buildNull();
@@ -151,18 +146,13 @@ public class JsonBuilder implements Builder {
         } else {
             throw new IllegalArgumentException("unable to write object class " + object.getClass());
         }
-        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
-            endValue(object);
-        } else if (state.structure == Structure.COLLECTION) {
-            endArrayValue(object);
-        }
         return this;
     }
 
     @Override
     public Builder buildKey(CharSequence string) throws IOException {
         if (state.structure == Structure.COLLECTION) {
-            beginArrayValue(string);
+            beginArrayValue();
         } else if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
             beginKey(string != null ? string.toString() : null);
         }
@@ -176,34 +166,19 @@ public class JsonBuilder implements Builder {
 
     @Override
     public Builder buildNull() throws IOException {
-        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
-            beginValue(null);
-        } else if (state.structure == Structure.COLLECTION) {
-            beginArrayValue(null);
+        if (state.structure == Structure.COLLECTION) {
+            beginArrayValue();
         }
         buildString("null", false);
-        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
-            endValue(null);
-        } else if (state.structure == Structure.COLLECTION) {
-            endArrayValue(null);
-        }
         return this;
     }
 
     @Override
     public Builder copy(Builder builder) throws IOException {
-        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
-            beginValue(null);
-        } else if (state.structure == Structure.COLLECTION) {
-            beginArrayValue(null);
+        if (state.structure == Structure.COLLECTION) {
+            beginArrayValue();
         }
         appendable.append(builder.build());
-        if (state.structure == Structure.MAP || state.structure == Structure.KEY) {
-            endValue(null);
-        }
-        if (state.structure == Structure.COLLECTION) {
-            endArrayValue(null);
-        }
         return this;
     }
 
@@ -224,21 +199,12 @@ public class JsonBuilder implements Builder {
         appendable.append(":");
     }
 
-    private void beginValue(Object v) {
-    }
-
-    private void endValue(Object v) {
-    }
-
-    private void beginArrayValue(Object v) throws IOException {
+    private void beginArrayValue() throws IOException {
         if (state.first) {
             state.first = false;
         } else {
             appendable.append(",");
         }
-    }
-
-    private void endArrayValue(Object v) {
     }
 
     private void buildBoolean(boolean bool) throws IOException {

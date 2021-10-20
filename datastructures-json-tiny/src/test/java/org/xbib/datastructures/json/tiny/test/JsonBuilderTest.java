@@ -8,6 +8,7 @@ import org.xbib.datastructures.json.tiny.StreamParser;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -233,9 +234,38 @@ public class JsonBuilderTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testJsonToMap() throws IOException {
+    public void testJsonToMap() {
         Map<String, Object> map = Json.toMap("{\"map\":{\"a\":\"b\"}}");
         assertTrue(map.get("map") instanceof Map);
         assertEquals("b", ((Map<String, Object>) map.get("map")).get("a"));
+    }
+
+    @Test
+    public void testMapInList() throws IOException {
+        JsonBuilder builder = new JsonBuilder();
+        String field = "name";
+        String value = "Jörg";
+        builder.beginMap().
+                beginMap("bool")
+                .beginCollection("should")
+                .beginMap()
+                .beginMap("simple_query_string")
+                .field("query", value)
+                .field("fields", Collections.singletonList(field))
+                .field("default_operator", "and")
+                .endMap()
+                .endMap()
+                .beginMap()
+                .beginMap("simple_query_string")
+                .field("query", "\"" + value + "\"")
+                .field("fields", Collections.singletonList(field + "^2"))
+                .field("default_operator", "and")
+                .endMap()
+                .endMap()
+                .endCollection()
+                .field("minimum_should_match", "1")
+                .endMap()
+                .endMap();
+        assertEquals("{\"bool\":{\"should\":[{\"simple_query_string\":{\"query\":\"Jörg\",\"fields\":[\"name\"],\"default_operator\":\"and\"}},{\"simple_query_string\":{\"query\":\"\\\"Jörg\\\"\",\"fields\":[\"name^2\"],\"default_operator\":\"and\"}}],\"minimum_should_match\":\"1\"}}", builder.build());
     }
 }
