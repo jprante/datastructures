@@ -12,7 +12,7 @@ dependencies {
 }
 
 task jmh(type: JavaExec, group: 'jmh', dependsOn: jmhClasses) {
-    main = 'org.openjdk.jmh.Main'
+    mainClass.set('org.openjdk.jmh.Main')
     classpath = sourceSets.jmh.compileClasspath + sourceSets.jmh.runtimeClasspath
     project.file('build/reports/jmh').mkdirs()
     args '-rf', 'json'
