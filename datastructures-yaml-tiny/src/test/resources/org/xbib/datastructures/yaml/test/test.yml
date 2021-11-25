@@ -38,6 +38,8 @@ types:
     Hello, this is
     a very important message
     with new lines folded into spaces
+  continuing: "abc\
+    def"
   # text string is one kept literal originally (but cannot comment the value)
   text: |
     def func(x) do

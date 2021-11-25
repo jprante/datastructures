@@ -182,6 +182,11 @@ public class Lexer {
                 if (isBSlash()) {
                     read();
                     switch (current()) {
+                        case EOL:
+                            read();
+                            skipBlanks();
+                            stringBuilder.append(current());
+                            break;
                         case '0':
                             stringBuilder.append('\0');
                             break;
