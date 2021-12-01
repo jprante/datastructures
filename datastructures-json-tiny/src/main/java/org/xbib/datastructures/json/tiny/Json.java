@@ -281,10 +281,10 @@ public class Json implements DataStructure {
         String sectName = sr[0];
         String restPath = sr[1];
         if (node instanceof MapNode) {
-            return internalGetNode((Node<?>) ((MapNode) node).get().get(sectName), restPath);
+            return internalGetNode(((MapNode) node).get().get(sectName), restPath);
         } else if (node instanceof ListNode) {
             try {
-                return internalGetNode((Node<?>) ((ListNode) node).get().get(Integer.parseInt(sectName)), restPath);
+                return internalGetNode(((ListNode) node).get().get(Integer.parseInt(sectName)), restPath);
             } catch (NumberFormatException ignore) {
                 //
             }
