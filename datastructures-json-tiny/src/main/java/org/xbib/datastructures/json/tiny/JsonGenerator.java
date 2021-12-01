@@ -21,7 +21,7 @@ public class JsonGenerator implements Generator {
 
     @Override
     public void generate(Writer writer) throws IOException {
-        this.builder = new JsonBuilder(writer);
+        this.builder = JsonBuilder.builder(writer);
         try (writer) {
             if (root != null) {
                 internalWrite(root);

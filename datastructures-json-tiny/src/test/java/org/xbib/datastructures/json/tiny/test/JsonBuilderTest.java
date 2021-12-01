@@ -19,35 +19,35 @@ public class JsonBuilderTest {
 
     @Test
     public void testUmlautEncoding() throws IOException{
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.buildMap(Map.of("Hello", "Jörg"));
         assertEquals("{\"Hello\":\"Jörg\"}", jsonBuilder.build());
     }
 
     @Test
     public void testObjectStrFromMap() throws IOException {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.buildMap(Map.of("a", "b"));
         assertEquals("{\"a\":\"b\"}", jsonBuilder.build());
     }
 
     @Test
     public void testObjectNumFromMap() throws IOException {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.buildMap(Map.of("a", 2));
         assertEquals("{\"a\":2}", jsonBuilder.build());
     }
 
     @Test
     public void testArrayFromCollection() throws IOException {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.buildCollection(List.of("a", "b", "c"));
         assertEquals("[\"a\",\"b\",\"c\"]", jsonBuilder.build());
     }
 
     @Test
     public void testArrayStr() throws IOException {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.beginCollection()
                 .buildValue("a")
                 .buildValue("b")
@@ -61,7 +61,7 @@ public class JsonBuilderTest {
 
     @Test
     public void testArrayNum() throws IOException {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.beginCollection()
                 .buildValue(1)
                 .buildValue(2)
@@ -75,7 +75,7 @@ public class JsonBuilderTest {
 
     @Test
     public void testArrayFloat() throws IOException {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.beginCollection()
                 .buildValue(1.0)
                 .buildValue(2.0)
@@ -89,7 +89,7 @@ public class JsonBuilderTest {
 
     @Test
     public void testObjectStr() throws IOException {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.beginMap()
                 .buildKey("a")
                 .buildValue("b")
@@ -102,7 +102,7 @@ public class JsonBuilderTest {
 
     @Test
     public void testObjectNum() throws IOException {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.beginMap()
                 .buildKey("a")
                 .buildValue(1)
@@ -115,14 +115,14 @@ public class JsonBuilderTest {
 
     @Test
     public void testBuild() throws Exception {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.buildMap(Map.of("a", "b"));
         assertEquals("{\"a\":\"b\"}", jsonBuilder.build());
     }
 
     @Test
     public void testKeyValue() throws Exception {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.beginMap();
         jsonBuilder.buildKey("a");
         jsonBuilder.buildValue("b");
@@ -135,7 +135,7 @@ public class JsonBuilderTest {
 
     @Test
     public void testMapBuild() throws Exception {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.beginMap();
         jsonBuilder.buildKey("map");
         // buildMap is wrapped with '{' and '}'
@@ -146,7 +146,7 @@ public class JsonBuilderTest {
 
     @Test
     public void testBeginMapBuild() throws Exception {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.beginMap();
         jsonBuilder.beginMap("map");
         // buildMap is not wrapped with '{' and '}'
@@ -158,7 +158,7 @@ public class JsonBuilderTest {
 
     @Test
     public void testMapOfCollections() throws Exception {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.beginMap();
         jsonBuilder.beginMap("map");
         jsonBuilder.collection("a", Arrays.asList("b", "c"));
@@ -171,7 +171,7 @@ public class JsonBuilderTest {
 
     @Test
     public void testMapOfEmptyCollections() throws Exception {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.beginMap();
         jsonBuilder.beginMap("map");
         jsonBuilder.collection("a", List.of());
@@ -184,7 +184,7 @@ public class JsonBuilderTest {
 
     @Test
     public void testCollectionOfMaps() throws Exception {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.beginMap();
         jsonBuilder.beginCollection("collection");
         jsonBuilder.buildMap(Map.of("a", "b"));
@@ -197,7 +197,7 @@ public class JsonBuilderTest {
 
     @Test
     public void testListOfMapAsField() throws Exception {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.beginMap();
         jsonBuilder.field("collection", List.of(Map.of("a","b"), Map.of("c", "d")));
         jsonBuilder.endMap();
@@ -206,7 +206,7 @@ public class JsonBuilderTest {
 
     @Test
     public void testCollectionOfEmptyMaps() throws Exception {
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.beginMap();
         jsonBuilder.beginCollection("collection");
         jsonBuilder.buildMap(Map.of());
@@ -219,11 +219,11 @@ public class JsonBuilderTest {
 
     @Test
     public void testCopy() throws Exception {
-        JsonBuilder jsonBuilder1 = new JsonBuilder();
+        JsonBuilder jsonBuilder1 = JsonBuilder.builder();
         jsonBuilder1.buildMap(Map.of("a", "b"));
-        JsonBuilder jsonBuilder2 = new JsonBuilder();
+        JsonBuilder jsonBuilder2 = JsonBuilder.builder();
         jsonBuilder2.buildMap(Map.of("c", "d"));
-        JsonBuilder jsonBuilder = new JsonBuilder();
+        JsonBuilder jsonBuilder = JsonBuilder.builder();
         jsonBuilder.beginCollection();
         jsonBuilder.copy(jsonBuilder1);
         // test comma separation
@@ -242,7 +242,7 @@ public class JsonBuilderTest {
 
     @Test
     public void testMapInList() throws IOException {
-        JsonBuilder builder = new JsonBuilder();
+        JsonBuilder builder = JsonBuilder.builder();
         String field = "name";
         String value = "Jörg";
         builder.beginMap().

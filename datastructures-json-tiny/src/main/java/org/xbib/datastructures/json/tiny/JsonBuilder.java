@@ -16,11 +16,11 @@ public class JsonBuilder implements Builder {
 
     private State state;
 
-    public JsonBuilder() {
+    protected JsonBuilder() {
         this(new StringBuilder());
     }
 
-    public JsonBuilder(Appendable appendable) {
+    protected JsonBuilder(Appendable appendable) {
         this.appendable = appendable;
         this.state = new State(null, 0, Structure.DOCSTART, true);
     }

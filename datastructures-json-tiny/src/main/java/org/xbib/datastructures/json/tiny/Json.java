@@ -82,19 +82,12 @@ public class Json implements DataStructure {
 
     @Override
     public Builder createBuilder() {
-        return new JsonBuilder(new StringWriter());
+        return JsonBuilder.builder();
     }
 
     @Override
     public Builder createBuilder(Consumer<String> consumer) {
-        return new JsonBuilder(new StringWriter()) {
-            @Override
-            public String toString() {
-                String string = super.toString();
-                consumer.accept(string);
-                return string;
-            }
-        };
+        return new ConsumingJsonBuilder(consumer);
     }
 
     @Override
@@ -400,5 +393,22 @@ public class Json implements DataStructure {
             return string.substring(1, string.length() - 1);
         }
         return string;
+    }
+
+    static class ConsumingJsonBuilder extends JsonBuilder {
+
+        private final Consumer<String> consumer;
+
+        ConsumingJsonBuilder(Consumer<String> consumer) {
+            super();
+            this.consumer = consumer;
+        }
+
+        @Override
+        public String build() {
+            String s = super.build();
+            consumer.accept(s);
+            return s;
+        }
     }
 }
