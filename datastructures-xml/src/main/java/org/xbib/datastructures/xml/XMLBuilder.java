@@ -306,6 +306,12 @@ public class XMLBuilder implements Builder {
     }
 
     @Override
+    public Builder copy(String string) throws IOException {
+        appendable.append(string);
+        return this;
+    }
+
+    @Override
     public String build() {
         return appendable.toString();
     }

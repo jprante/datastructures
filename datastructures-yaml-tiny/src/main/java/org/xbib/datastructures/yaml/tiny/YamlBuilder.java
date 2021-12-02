@@ -176,6 +176,12 @@ public class YamlBuilder implements Builder {
     }
 
     @Override
+    public Builder copy(String string) throws IOException {
+        buildValue(string);
+        return this;
+    }
+
+    @Override
     public String build() {
         return appendable.toString();
     }

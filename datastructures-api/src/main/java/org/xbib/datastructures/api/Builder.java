@@ -58,5 +58,7 @@ public interface Builder {
 
     Builder copy(Builder builder) throws IOException;
 
+    Builder copy(String string) throws IOException;
+
     String build();
 }

@@ -183,6 +183,15 @@ public class JsonBuilder implements Builder {
     }
 
     @Override
+    public Builder copy(String string) throws IOException {
+        if (state.structure == Structure.COLLECTION) {
+            beginArrayValue();
+        }
+        appendable.append(string);
+        return this;
+    }
+
+    @Override
     public String build() {
         return appendable.toString();
     }
