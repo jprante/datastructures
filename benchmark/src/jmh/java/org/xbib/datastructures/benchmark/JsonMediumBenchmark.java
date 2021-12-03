@@ -106,23 +106,7 @@ public class JsonMediumBenchmark {
     }
 
     @Benchmark
-    public Object datastructuresEmpty() {
-        StringParser stringParser = new StringParser(new EmptyJsonListener());
-        stringParser.parse(mediumInput);
-        return stringParser.getNode();  // there is no object in get()
-    }
-
-    @Benchmark
-    public Object datastructuresTiny() {
-        StringParser stringParser = new StringParser(new TinyJsonListener());
-        stringParser.parse(mediumInput);
-        return stringParser.getNode().get().toString();
-    }
-
-    @Benchmark
-    public Object datastructuresStandard() {
-        StringParser stringParser = new StringParser(new StandardJsonListener());
-        stringParser.parse(mediumInput);
-        return stringParser.getNode().get().toString();
+    public Object datastructuresJsonTiny() {
+        return org.xbib.datastructures.json.tiny.Json.toMap(mediumInput).toString();
     }
 }

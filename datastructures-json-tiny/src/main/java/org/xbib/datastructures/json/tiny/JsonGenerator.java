@@ -7,6 +7,7 @@ import org.xbib.datastructures.tiny.TinyMap;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.Map;
 
 public class JsonGenerator implements Generator {
@@ -31,12 +32,22 @@ public class JsonGenerator implements Generator {
 
     @SuppressWarnings("unchecked")
     public static Map<String, Object> toMap(Node<?> root) {
-        return (Map<String, Object>) internalMap(root);
+        return (Map<String, Object>) internalObject(root);
     }
 
     @SuppressWarnings("unchecked")
     public static Map<String, Object> toModifiableMap(Node<?> root) {
-        return (Map<String, Object>) internalModifiableMap(root);
+        return (Map<String, Object>) internalModifiableObject(root);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Collection<Object> toCollection(Node<?> root) {
+        return (Collection<Object>) internalObject(root);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Collection<Object> toModifiableCollection(Node<?> root) {
+        return (Collection<Object>) internalModifiableObject(root);
     }
 
     private void internalWrite(Node<?> curnode) throws IOException {
@@ -62,7 +73,7 @@ public class JsonGenerator implements Generator {
         }
     }
 
-    private static Object internalMap(Node<?> curnode) {
+    private static Object internalObject(Node<?> curnode) {
         if (curnode instanceof ValueNode) {
             ValueNode valueNode = (ValueNode) curnode;
             return valueNode.get();
@@ -70,14 +81,14 @@ public class JsonGenerator implements Generator {
             MapNode mapNode = (MapNode) curnode;
             TinyMap.Builder<String, Object> map = TinyMap.builder();
             for (Map.Entry<CharSequence, Node<?>> e : mapNode.get().entrySet()) {
-                map.put(e.getKey().toString(), internalMap(e.getValue()));
+                map.put(e.getKey().toString(), internalObject(e.getValue()));
             }
             return map.build();
         } else if (curnode instanceof ListNode) {
             ListNode listNode = (ListNode) curnode;
             TinyList.Builder<Object> list = TinyList.builder();
             for (Node<?> node : listNode.get()) {
-                list.add(internalMap(node));
+                list.add(internalObject(node));
             }
             return list.build();
         } else {
@@ -85,7 +96,7 @@ public class JsonGenerator implements Generator {
         }
     }
 
-    private static Object internalModifiableMap(Node<?> curnode) {
+    private static Object internalModifiableObject(Node<?> curnode) {
         if (curnode instanceof ValueNode) {
             ValueNode valueNode = (ValueNode) curnode;
             return valueNode.get();
@@ -93,14 +104,14 @@ public class JsonGenerator implements Generator {
             MapNode mapNode = (MapNode) curnode;
             TinyMap.Builder<String, Object> map = TinyMap.builder();
             for (Map.Entry<CharSequence, Node<?>> e : mapNode.get().entrySet()) {
-                map.put(e.getKey().toString(), internalMap(e.getValue()));
+                map.put(e.getKey().toString(), internalModifiableObject(e.getValue()));
             }
             return map;
         } else if (curnode instanceof ListNode) {
             ListNode listNode = (ListNode) curnode;
             TinyList.Builder<Object> list = TinyList.builder();
             for (Node<?> node : listNode.get()) {
-                list.add(internalMap(node));
+                list.add(internalModifiableObject(node));
             }
             return list;
         } else {

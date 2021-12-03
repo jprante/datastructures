@@ -103,27 +103,11 @@ public class JsonLargeBenchmark {
     @Benchmark
     public Object jsondsl() throws IOException {
         byte[] b = largeInput.getBytes(StandardCharsets.UTF_8);
-        return dslJson.deserialize(Map.class, b, b.length);
+        return dslJson.deserialize(List.class, b, b.length);
     }
 
     @Benchmark
-    public Object datastructuresEmpty() {
-        StringParser stringParser = new StringParser(new EmptyJsonListener());
-        stringParser.parse(largeInput);
-        return stringParser.getNode(); // there is no object in get()
-    }
-
-    @Benchmark
-    public Object datastructuresTiny() {
-        StringParser stringParser = new StringParser(new TinyJsonListener());
-        stringParser.parse(largeInput);
-        return stringParser.getNode().get().toString();
-    }
-
-    @Benchmark
-    public Object datastructuresStandard() {
-        StringParser stringParser = new StringParser(new StandardJsonListener());
-        stringParser.parse(largeInput);
-        return stringParser.getNode().get().toString();
+    public Object datastructuresJsonTiny() {
+        return org.xbib.datastructures.json.tiny.Json.toCollection(largeInput).toString();
     }
 }

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -67,6 +68,35 @@ public class Json implements DataStructure {
         // buffered reader is required for mark() support
         try (BufferedReader bufferedReader = new BufferedReader(reader)){
             return JsonGenerator.toModifiableMap(INSTANCE.createParser().parse(bufferedReader));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Collection<Object> toCollection(String json) {
+        if (json == null) {
+            return null;
+        }
+        PlainParser parser = new PlainParser();
+        parser.parse(json);
+        Object object = parser.getResult();
+        if (object instanceof Collection) {
+            return (Collection<Object>) parser.getResult();
+        }
+        throw new JsonException("unexpected, Json.toCollection got not a collection instance: " + object.getClass());
+    }
+
+    public static Collection<Object> toCollection(Reader reader) throws IOException {
+        Objects.requireNonNull(reader);
+        StringWriter writer = new StringWriter();
+        reader.transferTo(writer);
+        return toCollection(writer.toString());
+    }
+
+    public static Collection<Object> toModifiableCollection(Reader reader) throws IOException {
+        Objects.requireNonNull(reader);
+        // buffered reader is required for mark() support
+        try (BufferedReader bufferedReader = new BufferedReader(reader)){
+            return JsonGenerator.toModifiableCollection(INSTANCE.createParser().parse(bufferedReader));
         }
     }
 

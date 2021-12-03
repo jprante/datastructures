@@ -15,10 +15,6 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Timeout;
 import org.openjdk.jmh.annotations.Warmup;
-import org.xbib.datastructures.json.tiny.EmptyJsonListener;
-import org.xbib.datastructures.json.tiny.StandardJsonListener;
-import org.xbib.datastructures.json.tiny.StringParser;
-import org.xbib.datastructures.json.tiny.TinyJsonListener;
 import org.xbib.datastructures.json.flat.Json;
 import org.xbib.datastructures.json.noggit.ObjectBuilder;
 import org.xbib.datastructures.json.simple.JSONParser;
@@ -107,23 +103,7 @@ public class JsonSmallBenchmark {
     }
 
     @Benchmark
-    public Object datastructuresEmpty() {
-        StringParser stringParser = new StringParser(new EmptyJsonListener());
-        stringParser.parse(smallInput);
-        return stringParser.getNode();  // there is no object in get()
-    }
-
-    @Benchmark
-    public Object datastructuresTiny() {
-        StringParser stringParser = new StringParser(new TinyJsonListener());
-        stringParser.parse(smallInput);
-        return stringParser.getNode().get().toString();
-    }
-
-    @Benchmark
-    public Object datastructuresStandard() {
-        StringParser stringParser = new StringParser(new StandardJsonListener());
-        stringParser.parse(smallInput);
-        return stringParser.getNode().get().toString();
+    public Object datastructuresJsonTiny() {
+        return org.xbib.datastructures.json.tiny.Json.toMap(smallInput).toString();
     }
 }
