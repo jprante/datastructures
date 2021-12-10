@@ -2,7 +2,6 @@ package org.xbib.datastructures.json.tiny.test;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.xbib.datastructures.json.tiny.TinyJsonListener;
 import org.xbib.datastructures.json.tiny.StreamParser;
 import org.xbib.datastructures.json.tiny.StringParser;
 import java.io.BufferedReader;
@@ -27,7 +26,7 @@ public class LargeFileTest {
             try (inputStream) {
                 byte[] b = inputStream.readAllBytes();
                 String string = new String(b, StandardCharsets.UTF_8);
-                StringParser stringParser = new StringParser(new TinyJsonListener());
+                StringParser stringParser = new StringParser();
                 stringParser.parse(string);
                 stringParser.getNode().get();
                 stringParser.parse(string);
@@ -41,7 +40,7 @@ public class LargeFileTest {
         InputStream inputStream = ParserTest.class.getResourceAsStream("/org/xbib/datastructures/json/tiny/test/test.json");
         if (inputStream != null) {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-                StreamParser streamParser = new StreamParser(new TinyJsonListener());
+                StreamParser streamParser = new StreamParser();
                 Logger.getLogger("").log(Level.INFO, streamParser.parse(reader).get().toString());
             }
         }

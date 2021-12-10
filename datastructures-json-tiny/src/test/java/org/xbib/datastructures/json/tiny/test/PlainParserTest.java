@@ -19,7 +19,8 @@ public class PlainParserTest {
                 String string = new String(b, StandardCharsets.UTF_8);
                 PlainParser parser = new PlainParser();
                 parser.parse(string);
-                assertEquals("{a=b, c=d, e=[f, g], h={i={j=k}}, l=null, m=true, n=false, o=0, p=1, q=-1, r=0.0, s=1.0, t=2.1, u=-1.0, v=-2.1, w=, x=₫, y=Jörg}",
+                assertEquals("{a=b, c=d, e=[f, g], h={i={j=k}}, l=null, m=true, n=false, o=0, p=1, q=-1, r=0.0, s=1.0, t=2.1, u=-1.0, v=-2.1, w=, x=₫, y=Jörg, z=This is \"quoted\" text\n" +
+                                "after line break}",
                         parser.getResult().toString());
             }
         }

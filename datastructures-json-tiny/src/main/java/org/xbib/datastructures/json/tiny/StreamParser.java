@@ -166,8 +166,8 @@ public class StreamParser implements Parser {
                 escaped = true;
                 ch = reader.read();
                 if (ch == '"' || ch == '/' || ch == '\\' || ch == 'b' || ch == 'f' || ch == 'n' || ch == 'r' || ch == 't') {
-                    count++;
                     ch = reader.read();
+                    count += 2;
                 } else if (ch == 'u') {
                     expectHex();
                     expectHex();

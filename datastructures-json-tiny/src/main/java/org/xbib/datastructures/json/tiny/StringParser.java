@@ -32,11 +32,15 @@ public class StringParser {
 
     private char ch;
 
+    public StringParser() {
+        this(new TinyJsonListener());
+    }
+
     public StringParser(JsonResult listener) {
         this.listener = listener;
     }
 
-    public void parse(String input) throws JsonException {
+    public Node<?> parse(String input) throws JsonException {
         Objects.requireNonNull(input);
         Objects.requireNonNull(listener);
         this.input = input;
@@ -50,6 +54,7 @@ public class StringParser {
             throw new JsonException("malformed json: " + ch);
         }
         listener.end();
+        return listener.getResult();
     }
 
     public Node<?> getNode() {

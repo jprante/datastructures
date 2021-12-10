@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.xbib.datastructures.json.tiny.Json;
 import org.xbib.datastructures.json.tiny.JsonBuilder;
 import org.xbib.datastructures.json.tiny.StreamParser;
+import org.xbib.datastructures.json.tiny.StringParser;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -57,6 +58,8 @@ public class JsonBuilderTest {
         assertEquals("[\"a\",\"b\",\"c\"]", s);
         StreamParser streamParser = new StreamParser();
         assertEquals("[a, b, c]", streamParser.parse(new StringReader(s)).get().toString());
+        StringParser stringParser = new StringParser();
+        assertEquals("[a, b, c]", stringParser.parse(s).get().toString());
     }
 
     @Test
