@@ -37,19 +37,20 @@ public class Generator implements Constants, Closeable, Flushable {
         return this;
     }
 
-    public void write(String value) throws IOException {
-        if (col > 0) {
-            writer.write(COMMA);
+    public synchronized void write(String value) throws IOException {
+        if (col >= keys.size()) {
+            writer.write(LF);
+            row++;
+            col = 0;
+        } else {
+            if (col > 0) {
+                writer.write(COMMA);
+            }
         }
         if (value != null) {
             writer.write(escape(value));
         }
         col++;
-        if (col > keys.size()) {
-            writer.write(LF);
-            row++;
-            col = 0;
-        }
     }
 
     public int getColumn() {

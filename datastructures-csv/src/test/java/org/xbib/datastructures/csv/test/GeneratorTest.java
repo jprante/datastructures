@@ -10,7 +10,32 @@ import java.util.Arrays;
 public class GeneratorTest {
 
     @Test
-    public void test() throws IOException {
+    public void testOneColumn() throws IOException {
+        StringWriter writer = new StringWriter();
+        Generator gen = new Generator(writer);
+        gen.keys(Arrays.asList("a"));
+        for (int i = 0; i < 2; i++) {
+            gen.write("val" + i);
+        }
+        gen.close();
+        assertEquals("val0\nval1", writer.toString());
+    }
+
+    @Test
+    public void testTwoColumns() throws IOException {
+        StringWriter writer = new StringWriter();
+        Generator gen = new Generator(writer);
+        gen.keys(Arrays.asList("a", "b"));
+        for (int i = 0; i < 2; i++) {
+            gen.write("val" + i);
+            gen.write("val" + i);
+        }
+        gen.close();
+        assertEquals("val0,val0\nval1,val1", writer.toString());
+    }
+
+    @Test
+    public void testThreeColumns() throws IOException {
         StringWriter writer = new StringWriter();
         Generator gen = new Generator(writer);
         gen.keys(Arrays.asList("a", "b", "c"));
