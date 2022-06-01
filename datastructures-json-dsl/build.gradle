@@ -1,4 +1,4 @@
 dependencies {
-    api "org.xbib:jsr-305:1.0.0"
-    testImplementation "junit:junit:4.13.2"
+    api libs.jsr305
+    testImplementation libs.junit4
 }

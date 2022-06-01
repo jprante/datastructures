@@ -1,5 +1,5 @@
 dependencies {
-    api "org.xbib:jsr-305:${project.property('jsr305.version')}"
-    testImplementation "org.assertj:assertj-core:${project.property('assertj.version')}"
-    testImplementation "com.google.testing.compile:compile-testing:${project.property('google-testing.version')}"
+    api libs.jsr305.v2
+    testImplementation libs.assertj
+    testImplementation libs.compile.testing
 }

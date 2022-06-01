@@ -1,5 +1,5 @@
 dependencies {
-    testImplementation("org.mockito:mockito-core:${project.property('mockito.version')}") {
+    testImplementation(libs.mockito.core) {
         exclude group: 'org.hamcrest'
     }
 }

@@ -15,7 +15,7 @@ dependencies {
     implementation project(':datastructures-json-minimal')
     implementation project(':datastructures-json-noggit')
     implementation project(':datastructures-json-simple')
-    implementation "com.google.code.gson:gson:${project.property('gson.version')}"
-    implementation "com.fasterxml.jackson.core:jackson-databind:${project.property('jackson.version')}"
-    implementation "org.json:json:${project.property('orgjson.version')}"
+    implementation libs.gson
+    implementation libs.jackson.databind
+    implementation libs.orgjson
 }

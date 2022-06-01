@@ -1,3 +1,36 @@
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            version('gradle', '7.4.2')
+            version('junit', '5.8.2')
+            version('jackson', '2.12.7')
+            library('junit-jupiter-api', 'org.junit.jupiter', 'junit-jupiter-api').versionRef('junit')
+            library('junit-jupiter-params', 'org.junit.jupiter', 'junit-jupiter-params').versionRef('junit')
+            library('junit-jupiter-engine', 'org.junit.jupiter', 'junit-jupiter-engine').versionRef('junit')
+            library('junit-vintage-engine', 'org.junit.vintage', 'junit-vintage-engine').versionRef('junit')
+            library('hamcrest', 'org.hamcrest', 'hamcrest-library').version('2.2')
+            library('junit4', 'junit', 'junit').version('4.13.2')
+            library('chronicle-core', 'net.openhft', 'chronicle-core').version('2.21ea14')
+            library('affinity', 'net.openhft', 'affinity').version('3.21ea0')
+            library('jsr305', 'org.xbib', 'jsr-305').version('1.0.0')
+            library('jsr305-v2', 'org.xbib', 'jsr-305').version('2.0.0')
+            library('javassist', 'org.javassist', 'javassist').version('3.28.0-GA')
+            library('jackson', 'com.fasterxml.jackson.core', 'jackson-databind').versionRef('jackson')
+            library('gson', 'com.google.code.gson', 'gson').version('2.8.9')
+            library('orgjson', 'org.json', 'json').version('20210307')
+            library('jackson-annotations', 'com.fasterxml.jackson.core', 'jackson-annotations').versionRef('jackson')
+            library('jackson-databind', 'com.fasterxml.jackson.core', 'jackson-databind').versionRef('jackson')
+            library('mockito-core', 'org.mockito', 'mockito-core').version('3.12.4')
+            library('google-truth', 'com.google.truth', 'truth').version('0.32')
+            library('burst-junit4', 'com.squareup.burst', 'burst-junit4').version('1.1.1')
+            library('okio', 'com.squareup.okio', 'okio').version('1.13.0')
+            library('assertj', 'org.assertj', 'assertj-core').version('3.22.0')
+            library('compile-testing', 'com.google.testing.compile', 'compile-testing').version('0.19')
+            library('jxl', 'net.sourceforge.jexcelapi', 'jxl').version('2.6.12')
+        }
+    }
+}
+
 include 'datastructures-api'
 include 'datastructures-io'
 include 'datastructures-bytes'
@@ -9,7 +42,6 @@ include 'datastructures-xslx'
 include 'datastructures-json-dsl'
 include 'datastructures-json-flat'
 include 'datastructures-json-iterator'
-include 'datastructures-json-jackson'
 include 'datastructures-json-micro'
 include 'datastructures-json-minimal'
 include 'datastructures-json-noggit'
