@@ -25,7 +25,7 @@
 #     presentation when isolated.
 #   • The RGI set is covered by the listed fully-qualified emoji. 
 #   • The listed minimally-qualified and unqualified cover all cases where an
-#     element of the RGI set is missing one or more emoji presentation selectors.
+#     trieKeySegment of the RGI set is missing one or more emoji presentation selectors.
 #   • The file is in CLDR order, not codepoint order. This is recommended (but not required!) for keyboard palettes.
 #   • The groups and subgroups are illustrative. See the Emoji Order chart for more information.
 

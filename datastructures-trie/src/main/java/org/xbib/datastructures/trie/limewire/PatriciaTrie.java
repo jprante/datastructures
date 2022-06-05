@@ -4,11 +4,13 @@ import java.util.AbstractCollection;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 
@@ -36,7 +38,7 @@ import java.util.SortedMap;
  * closeness is determined by the {@link KeyAnalyzer} returning true or
  * false for a bit being set or not in a given key.
  * <p>
- * This PATRICIA Trie supports both variable length & fixed length keys.
+ * This PATRICIA Trie supports both variable length and fixed length keys.
  * Some methods, such as <code>getPrefixedBy(...)</code> are suited only to
  * variable length keys, whereas <code>getPrefixedByBits(...)</code> is suited
  * to fixed-size keys.
@@ -50,7 +52,7 @@ import java.util.SortedMap;
  * (and it isn't K).
  *
  * <pre>
- * PatriciaTrie<String, String> trie = new PatriciaTrie<String, String>
+ * PatriciaTrie&lt;String, String&gt; trie = new PatriciaTrie&lt;String, String&gt;
  * (new CharSequenceKeyAnalyzer());
  *
  * trie.put("Lime", "Lime");
@@ -113,7 +115,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      * Returns true if bitIndex is a valid index
      */
     private static boolean isValidBitIndex(int bitIndex) {
-        return 0 <= bitIndex && bitIndex <= Integer.MAX_VALUE;
+        return 0 <= bitIndex;
     }
 
     /**
@@ -209,7 +211,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
     }
 
     /**
-     * Adds a new <key, value> pair to the Trie and if a pair already
+     * Adds a new &lt;key, value&gt; pair to the Trie and if a pair already
      * exists it will be replaced. In the latter case it will return
      * the old value.
      */
@@ -394,10 +396,10 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      * Returns the Value whose Key has the longest prefix
      * in common with our lookup key.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked","rawtypes"})
     public V select(K key) {
         int keyLength = length(key);
-        TrieEntry[] result = new TrieEntry[1];
+        TrieEntry<K, V>[] result = new TrieEntry[1];
         if (!selectR(root.left, -1, key, keyLength, result)) {
             TrieEntry<K, V> e = result[0];
             return e.getValue();
@@ -411,8 +413,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      * Entry from the Trie.
      */
     private boolean selectR(TrieEntry<K, V> h, int bitIndex,
-                            final K key, final int keyLength, final TrieEntry[] result) {
-
+                            final K key, final int keyLength, final TrieEntry<K, V>[] result) {
         if (h.bitIndex <= bitIndex) {
             // If we hit the root Node and it is empty
             // we have to look for an alternative best
@@ -423,7 +424,6 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
             }
             return true;
         }
-
         if (!isBitSet(key, keyLength, h.bitIndex)) {
             if (selectR(h.left, h.bitIndex, key, keyLength, result)) {
                 return selectR(h.right, h.bitIndex, key, keyLength, result);
@@ -436,10 +436,10 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
         return false;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked","rawtypes"})
     public Map.Entry<K, V> select(K key, Cursor<? super K, ? super V> cursor) {
         int keyLength = length(key);
-        TrieEntry[] result = new TrieEntry[]{null};
+        TrieEntry<K, V>[] result = new TrieEntry[] { null };
         selectR(root.left, -1, key, keyLength, cursor, result);
         return result[0];
     }
@@ -448,8 +448,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
                             final K key,
                             final int keyLength,
                             final Cursor<? super K, ? super V> cursor,
-                            final TrieEntry[] result) {
-
+                            final TrieEntry<K, V>[] result) {
         if (h.bitIndex <= bitIndex) {
             if (!h.isEmpty()) {
                 Cursor.SelectStatus ret = cursor.select(h);
@@ -470,7 +469,6 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
             }
             return true; // continue
         }
-
         if (!isBitSet(key, keyLength, h.bitIndex)) {
             if (selectR(h.left, h.bitIndex, key, keyLength, cursor, result)) {
                 return selectR(h.right, h.bitIndex, key, keyLength, cursor, result);
@@ -480,7 +478,6 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
                 return selectR(h.left, h.bitIndex, key, keyLength, cursor, result);
             }
         }
-
         return false;
     }
 
@@ -495,7 +492,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      * a lookup of 'Lime' would return 'Lime', 'LimeRadio', and 'LimeWire'.
      * <p>
      * The view that this returns is optimized to have a very efficient
-     * Iterator. The firstKey, lastKey & size methods must iterate
+     * Iterator. The firstKey, lastKey &amp; size methods must iterate
      * over all possible values in order to determine the results. This
      * information is cached until the Patricia tree changes. All other
      * methods (except Iterator) must compare the given key to the prefix
@@ -505,7 +502,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      * Changing the subtree takes O(K) time.
      */
     public SortedMap<K, V> getPrefixedBy(K key) {
-        return getPrefixedByBits(key, 0, keyAnalyzer.length(key));
+        return getPrefixedByBits(key, 0, keyAnalyzer.lengthInBits(key));
     }
 
     /**
@@ -521,7 +518,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      * return 'Lime', 'LimeRadio', and 'LimeWire'.
      * <p>
      * The view that this returns is optimized to have a very efficient
-     * Iterator.  The firstKey, lastKey & size methods must iterate
+     * Iterator.  The firstKey, lastKey &amp; size methods must iterate
      * over all possible values in order to determine the results.  This
      * information is cached until the Patricia tree changes.  All other
      * methods (except Iterator) must compare the given key to the prefix
@@ -547,7 +544,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      * length of 4 would return 'Lime', 'LimeRadio', and 'LimeWire'.
      * <p>
      * The view that this returns is optimized to have a very efficient
-     * Iterator.  The firstKey, lastKey & size methods must iterate
+     * Iterator.  The firstKey, lastKey &amp; size methods must iterate
      * over all possible values in order to determine the results.  This
      * information is cached until the Patricia tree changes.  All other
      * methods (except Iterator) must compare the given key to the prefix
@@ -571,7 +568,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      * would return all addresses that begin with '192.168'.
      * <p>
      * The view that this returns is optimized to have a very efficient
-     * Iterator.  The firstKey, lastKey & size methods must iterate
+     * Iterator.  The firstKey, lastKey &amp; size methods must iterate
      * over all possible values in order to determine the results.  This
      * information is cached until the Patricia tree changes.  All other
      * methods (except Iterator) must compare the given key to the prefix
@@ -605,9 +602,9 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
             throw new IllegalArgumentException(offset + " + " + length + " > " + length(key));
         }
 
-        if (offsetLength == 0)
+        if (offsetLength == 0) {
             return this;
-
+        }
         return new PrefixSubMap(key, offset, length);
     }
 
@@ -620,11 +617,11 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
     @Override
     public boolean containsKey(Object k) {
         K key = asKey(k);
-        if (key == null)
+        if (key == null) {
             return false;
-
+        }
         int keyLength = length(key);
-        TrieEntry entry = getNearestEntryForKey(key, keyLength);
+        TrieEntry<K, V> entry = getNearestEntryForKey(key, keyLength);
         return !entry.isEmpty() && key.equals(entry.key);
     }
 
@@ -633,9 +630,11 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      */
     @Override
     public boolean containsValue(Object o) {
-        for (V v : values())
-            if (valEquals(v, o))
+        for (V v : values()) {
+            if (valEquals(v, o)) {
                 return true;
+            }
+        }
         return false;
     }
 
@@ -1050,7 +1049,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
             return 0;
         }
 
-        return keyAnalyzer.length(key);
+        return keyAnalyzer.lengthInBits(key);
     }
 
     /**
@@ -1162,7 +1161,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
     /**
      * Traverses down the right path until it finds an uplink.
      */
-    protected TrieEntry<K, V> followRight(TrieEntry<K, V> node) {
+    private TrieEntry<K, V> followRight(TrieEntry<K, V> node) {
         // if Trie is empty, no last entry.
         if (node.right == null)
             return null;
@@ -1174,14 +1173,17 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
         return node.right;
     }
 
+    @Override
     public K firstKey() {
         return firstEntry().getKey();
     }
 
+    @Override
     public SortedMap<K, V> headMap(K toKey) {
         return new SubMap(null, toKey);
     }
 
+    @Override
     public K lastKey() {
         TrieEntry<K, V> entry = lastEntry();
         if (entry != null)
@@ -1190,10 +1192,12 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
             return null;
     }
 
+    @Override
     public SortedMap<K, V> subMap(K fromKey, K toKey) {
         return new SubMap(fromKey, toKey);
     }
 
+    @Override
     public SortedMap<K, V> tailMap(K fromKey) {
         return new SubMap(fromKey, null);
     }
@@ -1202,7 +1206,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      * Returns an entry strictly higher than the given key,
      * or null if no such entry exists.
      */
-    protected TrieEntry<K, V> higherEntry(K key) {
+    private TrieEntry<K, V> higherEntry(K key) {
         // TODO: Cleanup so that we don't actually have to add/remove from the
         //       tree.  (We do it here because there are other well-defined
         //       functions to perform the search.)
@@ -1254,7 +1258,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      * Returns a key-value mapping associated with the least key greater
      * than or equal to the given key, or null if there is no such key.
      */
-    protected TrieEntry<K, V> ceilingEntry(K key) {
+    private TrieEntry<K, V> ceilingEntry(K key) {
         // Basically:
         // Follow the steps of adding an entry, but instead...
         //
@@ -1312,7 +1316,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      * Returns a key-value mapping associated with the greatest key
      * strictly less than the given key, or null if there is no such key.
      */
-    protected TrieEntry<K, V> lowerEntry(K key) {
+    private TrieEntry<K, V> lowerEntry(K key) {
         // Basically:
         // Follow the steps of adding an entry, but instead...
         //
@@ -1363,7 +1367,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      * Returns a key-value mapping associated with the greatest key
      * less than or equal to the given key, or null if there is no such key.
      */
-    protected TrieEntry<K, V> floorEntry(K key) {
+    private TrieEntry<K, V> floorEntry(K key) {
         // TODO: Cleanup so that we don't actually have to add/remove from the
         //       tree.  (We do it here because there are other well-defined
         //       functions to perform the search.)
@@ -1449,68 +1453,6 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
     }
 
     /**
-     * Defines the interface to analyze {@link Trie} keys on a bit
-     * level. <code>KeyAnalyzer</code>'s
-     * methods return the length of the key in bits, whether or not a bit is
-     * set, and bits per element in the key.
-     * <p>
-     * Additionally, a method determines if a key is a prefix of another key and
-     * returns the bit index where one key is different from another key (if
-     * the key and found key are equal than the return value is EQUAL_BIT_KEY).
-     * <p>
-     * <code>KeyAnalyzer</code> defines:<br>
-     * <table cellspace="5">
-     * <tr><td>NULL_BIT_KEY</td><td>When key's bits are all zero</td></tr>
-     * <tr><td> EQUAL_BIT_KEY </td><td>When keys are the same </td></tr>
-     * </table>
-     */
-    public interface KeyAnalyzer<K> extends Comparator<K> {
-
-        /**
-         * Returned by bitIndex if key's bits are all 0.
-         */
-        int NULL_BIT_KEY = -1;
-
-        /**
-         * Returned by bitIndex if key and found key are
-         * equal. This is a very very specific case and
-         * shouldn't happen on a regular basis.
-         */
-        int EQUAL_BIT_KEY = -2;
-
-        /**
-         * Returns the length of the Key in bits.
-         */
-        int length(K key);
-
-        /**
-         * Returns whether or not a bit is set.
-         */
-        boolean isBitSet(K key, int keyLength, int bitIndex);
-
-        /**
-         * Returns the n-th different bit between key and found.
-         * This starts the comparison in key at 'keyStart' and goes
-         * for 'keyLength' bits, and compares to the found key
-         * starting at 'foundStart' and going for 'foundLength' bits.
-         */
-        int bitIndex(K key, int keyStart, int keyLength,
-                     K found, int foundStart, int foundLength);
-
-        /**
-         * Returns the number of bits per element in the key.
-         * This is only useful for variable-length keys, such as Strings.
-         */
-        int bitsPerElement();
-
-        /**
-         * Determines whether or not the given prefix (from offset to length)
-         * is a prefix of the given key.
-         */
-        boolean isPrefix(K prefix, int offset, int length, K key);
-    }
-
-    /**
      * The actual Trie nodes.
      */
     private static class TrieEntry<K, V> implements Map.Entry<K, V> {
@@ -1540,18 +1482,17 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
          */
         private TrieEntry<K, V> predecessor;
 
-        private TrieEntry(K key, V value, int bitIndex) {
+        TrieEntry(K key, V value, int bitIndex) {
             this.key = key;
             this.value = value;
-
             this.bitIndex = bitIndex;
-
             this.parent = null;
             this.left = this;
             this.right = null;
             this.predecessor = this;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public boolean equals(Object o) {
             if (o == this) {
@@ -1571,6 +1512,11 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
             }
         }
 
+        @Override
+        public int hashCode() {
+            return Objects.hash(key, value, bitIndex, parent, left, right, predecessor);
+        }
+
         /**
          * Whether or not the entry is storing a key.
          * Only the root can potentially be empty, all other
@@ -1580,6 +1526,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
             return key == null;
         }
 
+        @Override
         public K getKey() {
             return key;
         }
@@ -1677,40 +1624,9 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
     }
 
     /**
-     * An iterator that stores a single TrieEntry.
-     */
-    private class SingletonIterator implements Iterator<Map.Entry<K, V>> {
-        private final TrieEntry<K, V> entry;
-        private int hit = 0;
-
-        public SingletonIterator(TrieEntry<K, V> entry) {
-            this.entry = entry;
-        }
-
-        public boolean hasNext() {
-            return hit == 0;
-        }
-
-        public Map.Entry<K, V> next() {
-            if (hit != 0)
-                throw new NoSuchElementException();
-            hit++;
-            return entry;
-        }
-
-        public void remove() {
-            if (hit != 1)
-                throw new IllegalStateException();
-            hit++;
-            PatriciaTrie.this.removeEntry(entry);
-        }
-
-    }
-
-    /**
      * An iterator for the entries.
      */
-    private abstract class NodeIterator<E> implements Iterator<E> {
+    abstract class NodeIterator<E> implements Iterator<E> {
         protected int expectedModCount = modCount;   // For fast-fail
         protected TrieEntry<K, V> next; // the next node to return
         protected TrieEntry<K, V> current; // the current entry we're on
@@ -1761,7 +1677,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
 
     private class ValueIterator extends NodeIterator<V> {
         public V next() {
-            return nextEntry().value;
+            return nextEntry().getValue();
         }
     }
 
@@ -1775,6 +1691,39 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
         public Map.Entry<K, V> next() {
             return nextEntry();
         }
+    }
+
+    class SingletonIterator implements Iterator<Map.Entry<K, V>> {
+
+        private final PatriciaTrie<K, V> patriciaTrie;
+
+        private final TrieEntry<K, V> entry;
+
+        private int hit = 0;
+
+        public SingletonIterator(PatriciaTrie<K, V> patriciaTrie, TrieEntry<K, V> entry) {
+            this.patriciaTrie = patriciaTrie;
+            this.entry = entry;
+        }
+
+        public boolean hasNext() {
+            return hit == 0;
+        }
+
+        public Map.Entry<K, V> next() {
+            if (hit != 0)
+                throw new NoSuchElementException();
+            hit++;
+            return entry;
+        }
+
+        public void remove() {
+            if (hit != 1)
+                throw new IllegalStateException();
+            hit++;
+            patriciaTrie.removeEntry(entry);
+        }
+
     }
 
     /**
@@ -2082,11 +2031,11 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
                     prefixStart = subtree(prefix, offset, length);
                     iterModCount = modCount;
                 }
-
                 if (prefixStart == null) {
-                    return EmptyIterator.emptyIterator();
+                    Set<Map.Entry<K, V>> set = Collections.emptySet();
+                    return set.iterator();
                 } else if (length >= prefixStart.bitIndex) {
-                    return new SingletonIterator(prefixStart);
+                    return new SingletonIterator(PatriciaTrie.this, prefixStart);
                 } else {
                     return new PrefixEntryIterator(prefixStart, prefix, offset, length);
                 }
@@ -2273,10 +2222,8 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
                 if (size == -1 || sizeModCount != PatriciaTrie.this.modCount) {
                     size = 0;
                     sizeModCount = PatriciaTrie.this.modCount;
-                    Iterator i = iterator();
-                    while (i.hasNext()) {
+                    for (Entry<K, V> kvEntry : this) {
                         size++;
-                        i.next();
                     }
                 }
                 return size;
@@ -2304,12 +2251,14 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
             @Override
             @SuppressWarnings("unchecked")
             public boolean remove(Object o) {
-                if (!(o instanceof Map.Entry))
+                if (!(o instanceof Map.Entry)) {
                     return false;
+                }
                 Map.Entry<K, V> entry = (Map.Entry<K, V>) o;
                 K key = entry.getKey();
-                if (!inRange(key))
+                if (!inRange(key)) {
                     return false;
+                }
                 TrieEntry<K, V> node = getEntry(key);
                 if (node != null && valEquals(node.getValue(), entry.getValue())) {
                     removeEntry(node);

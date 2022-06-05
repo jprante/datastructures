@@ -1,4 +1,4 @@
-package org.xbib.datastructures.trie;
+package org.xbib.datastructures.trie.simple;
 
 import org.junit.jupiter.api.Test;
 

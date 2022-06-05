@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @param <T>
  */
-class Node<T> {
+public class Node<T> {
 
     private String key;
 

@@ -61,10 +61,8 @@ public class StringKeyAnalyzer extends AbstractKeyAnalyzer<String> {
         if (bitIndex >= lengthInBits(key)) {
             return false;
         }
-
         int index = bitIndex / size;
         int bit = bitIndex % size;
-
         return (key.charAt(index) & mask(bit)) != 0;
     }
 
@@ -75,15 +73,11 @@ public class StringKeyAnalyzer extends AbstractKeyAnalyzer<String> {
 
     @Override
     public int bitIndex(String key, String otherKey) {
-
         boolean allNull = true;
         int length = Math.max(key.length(), otherKey.length());
-
         for (int i = 0; i < length; i++) {
-
             char ch1 = valueAt(key, i);
             char ch2 = valueAt(otherKey, i);
-
             if (ch1 != ch2) {
                 int xor = ch1 ^ ch2;
                 for (int j = 0; j < size; j++) {
@@ -92,17 +86,14 @@ public class StringKeyAnalyzer extends AbstractKeyAnalyzer<String> {
                     }
                 }
             }
-
             if (ch1 != 0) {
                 allNull = false;
             }
         }
-
         // All bits are 0
         if (allNull) {
             return KeyAnalyzer.NULL_BIT_KEY;
         }
-
         // Both keys are equal
         return KeyAnalyzer.EQUAL_BIT_KEY;
     }
