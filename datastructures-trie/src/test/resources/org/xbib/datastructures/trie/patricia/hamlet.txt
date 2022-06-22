@@ -4898,7 +4898,7 @@ QUEEN GERTRUDE	There is a willow grows aslant a brook,
 	Which time she chanted snatches of old tunes;
 	As one incapable of her own distress,
 	Or like a creature native and indued
-	Unto that element: but long it could not be
+	Unto that trieKeySegment: but long it could not be
 	Till that her garments, heavy with their drink,
 	Pull'd the poor wretch from her melodious lay
 	To muddy death.

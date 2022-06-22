@@ -39,7 +39,7 @@ artifacts {
 
 tasks.withType(JavaCompile) {
   // commented out mostly because of jmh generated code
-  //  options.compilerArgs << '-Xlint:all'
+    options.compilerArgs << '-Xlint:all'
 }
 
 javadoc {
