@@ -59,19 +59,18 @@ public class Generator implements Constants, Closeable, Flushable {
     }
 
     public synchronized void write(String value) throws IOException {
-        if (col >= keys.size()) {
-            writer.write(LF);
-            row++;
-            col = 0;
-        } else {
-            if (col > 0) {
-                writer.write(separator);
-            }
+        if (col > 0) {
+            writer.write(separator);
         }
         if (value != null) {
             writer.write(escape(value));
         }
         col++;
+        if (col >= keys.size()) {
+            writer.write(LF);
+            row++;
+            col = 0;
+        }
     }
 
     public int getColumn() {

@@ -18,7 +18,7 @@ public class GeneratorTest {
             gen.write("val" + i);
         }
         gen.close();
-        assertEquals("val0\nval1", writer.toString());
+        assertEquals("val0\nval1\n", writer.toString());
     }
 
     @Test
@@ -31,7 +31,7 @@ public class GeneratorTest {
             gen.write("val" + i);
         }
         gen.close();
-        assertEquals("val0,val0\nval1,val1", writer.toString());
+        assertEquals("val0,val0\nval1,val1\n", writer.toString());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class GeneratorTest {
             gen.write("hey look a line seperator \n");
         }
         gen.close();
-        assertEquals("val0,\"\"\"Hello, World\"\"\",\"hey look a line seperator \n\"", writer.toString());
+        assertEquals("val0,\"\"\"Hello, World\"\"\",\"hey look a line seperator \n\"\n", writer.toString());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class GeneratorTest {
             gen.write("hey look a line seperator \n");
         }
         gen.close();
-        assertEquals("\"val0\";\"\"\"Hello, World\"\"\";\"hey look a line seperator \n\"", writer.toString());
+        assertEquals("\"val0\";\"\"\"Hello, World\"\"\";\"hey look a line seperator \n\"\n", writer.toString());
     }
 }
 
