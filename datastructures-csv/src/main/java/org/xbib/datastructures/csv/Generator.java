@@ -19,10 +19,31 @@ public class Generator implements Constants, Closeable, Flushable {
 
     private List<String> keys;
 
+    private char separator = COMMA;
+
+    private char quote = DOUBLE_QUOTE;
+
+    private boolean alwaysQuote;
+
     public Generator(Writer writer) {
         this.writer = writer;
         this.col = 0;
         this.keys = new ArrayList<>();
+    }
+
+    public Generator setSeparator(char separator) {
+        this.separator = separator;
+        return this;
+    }
+
+    public Generator setAlwaysQuote(boolean alwaysQuote) {
+        this.alwaysQuote = alwaysQuote;
+        return this;
+    }
+
+    public Generator setQuote(char quote) {
+        this.quote = quote;
+        return this;
     }
 
     public Generator keys(List<String> keys) {
@@ -44,7 +65,7 @@ public class Generator implements Constants, Closeable, Flushable {
             col = 0;
         } else {
             if (col > 0) {
-                writer.write(COMMA);
+                writer.write(separator);
             }
         }
         if (value != null) {
@@ -72,8 +93,7 @@ public class Generator implements Constants, Closeable, Flushable {
     }
 
     private String escape(String value) {
-        if (value.indexOf(QUOTE) < 0
-                && value.indexOf(ESCAPE_CHARACTER) < 0
+        if (!alwaysQuote && value.indexOf(quote) < 0
                 && value.indexOf(COMMA) < 0
                 && value.indexOf(TAB) < 0
                 && !value.contains(LF)) {
@@ -81,15 +101,15 @@ public class Generator implements Constants, Closeable, Flushable {
         }
         int length = value.length();
         StringBuilder sb = new StringBuilder(length + 2);
-        sb.append(QUOTE);
+        sb.append(quote);
         for (int i = 0; i < length; i++) {
             char ch = value.charAt(i);
-            if (ch == QUOTE) {
-                sb.append(QUOTE);
+            if (ch == quote) {
+                sb.append(quote);
             }
             sb.append(ch);
         }
-        sb.append(QUOTE);
+        sb.append(quote);
         return sb.toString();
     }
 

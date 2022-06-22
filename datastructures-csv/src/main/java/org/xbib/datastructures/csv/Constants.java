@@ -8,6 +8,5 @@ public interface Constants {
     char LF = '\n';
     char TAB = '\t';
     char COMMA = ',';
-    char QUOTE = '\"';
-    char ESCAPE_CHARACTER = '\"';
+    char DOUBLE_QUOTE = '\"';
 }
