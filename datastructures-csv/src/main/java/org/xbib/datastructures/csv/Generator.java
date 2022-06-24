@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Generator implements Constants, Closeable, Flushable {
 
-    private static final String LF = System.getProperty("line.separator");
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     private final Writer writer;
 
@@ -25,6 +25,8 @@ public class Generator implements Constants, Closeable, Flushable {
 
     private boolean alwaysQuote;
 
+    private boolean neverQuote;
+
     public Generator(Writer writer) {
         this.writer = writer;
         this.col = 0;
@@ -38,6 +40,11 @@ public class Generator implements Constants, Closeable, Flushable {
 
     public Generator setAlwaysQuote(boolean alwaysQuote) {
         this.alwaysQuote = alwaysQuote;
+        return this;
+    }
+
+    public Generator setNeverQuote(boolean neverQuote) {
+        this.neverQuote = neverQuote;
         return this;
     }
 
@@ -59,15 +66,16 @@ public class Generator implements Constants, Closeable, Flushable {
     }
 
     public synchronized void write(String value) throws IOException {
+        if (value == null) {
+            throw new IllegalArgumentException("null value not allowed");
+        }
         if (col > 0) {
             writer.write(separator);
         }
-        if (value != null) {
-            writer.write(escape(value));
-        }
+        writer.write(maybeEscape(value));
         col++;
         if (col >= keys.size()) {
-            writer.write(LF);
+            writer.write(LINE_SEPARATOR);
             row++;
             col = 0;
         }
@@ -91,13 +99,29 @@ public class Generator implements Constants, Closeable, Flushable {
         writer.flush();
     }
 
-    private String escape(String value) {
-        if (!alwaysQuote && value.indexOf(quote) < 0
-                && value.indexOf(COMMA) < 0
-                && value.indexOf(TAB) < 0
-                && !value.contains(LF)) {
-           return value;
+    private String maybeEscape(String value) {
+        if (alwaysQuote) {
+            return escape(value);
         }
+        if (neverQuote) {
+            return value;
+        }
+        if (value.indexOf(quote) < 0
+                && value.indexOf(separator) < 0
+                && value.indexOf(TAB) < 0
+                && value.indexOf(FF) < 0
+                && value.indexOf(CR) < 0
+                && value.indexOf(LF) < 0
+                && value.indexOf(BACKSPACE) < 0
+                && !value.contains(LINE_SEPARATOR)) {
+           return value;
+        } else {
+            return escape(value);
+        }
+    }
+
+    private String escape(String value) {
+        // escape means, surround the value by the quote character and emit quote character with the value twice
         int length = value.length();
         StringBuilder sb = new StringBuilder(length + 2);
         sb.append(quote);
@@ -111,5 +135,4 @@ public class Generator implements Constants, Closeable, Flushable {
         sb.append(quote);
         return sb.toString();
     }
-
 }
