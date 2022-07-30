@@ -1,6 +1,5 @@
 package org.xbib.datastructures.trie.segment;
 
-import java.util.Arrays;
 import java.util.List;
 
 public interface TrieKey<T> {
@@ -13,7 +12,7 @@ public interface TrieKey<T> {
 
     void set(int i, TrieKeySegment<T> trieKeySegment);
 
-    TrieKeySegment<T> get(int i);
+    TrieKeySegment<T> getSegment(int i);
 
     List<TrieKeySegment<T>> getSegments();
 }

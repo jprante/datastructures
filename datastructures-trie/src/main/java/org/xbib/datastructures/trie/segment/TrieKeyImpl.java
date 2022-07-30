@@ -48,7 +48,7 @@ public class TrieKeyImpl<T> implements TrieKey<T>, Comparable<TrieKeyImpl<T>> {
     }
 
     @Override
-    public TrieKeySegment<T> get(int i) {
+    public TrieKeySegment<T> getSegment(int i) {
         return segments.get(i);
     }
 

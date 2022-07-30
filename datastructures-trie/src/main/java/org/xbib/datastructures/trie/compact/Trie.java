@@ -24,7 +24,8 @@ public class Trie {
         if (lastNode.divergeKeyIndex == key.length) { 
             if (lastNode.divergePatternIndex == lastNode.value.length) {
                 lastNode.isLeaf = true;
-            } else {// we need to reduce length of the compressed pattern in the current node,
+            } else {
+                // we need to reduce length of the compressed pattern in the current node,
                 // make it node leaf, and create child that carry over the original children/isLeaf
                 char[] childValue = Arrays.copyOfRange(lastNode.value,
                         lastNode.divergePatternIndex, lastNode.value.length);

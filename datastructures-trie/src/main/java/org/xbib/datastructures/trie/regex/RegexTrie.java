@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * The RegexTrie is a trie where each _stored_ segment of the key is a regex {@link Pattern}.  Thus,
+ * The RegexTrie is a trie where each _stored_ segment of the key is a regex {@link Pattern}. Thus,
  * the full _stored_ key is a List<Pattern> rather than a String as in a standard trie.  Note that
  * the retrieve method requires a List<String>, which will be matched against the
  * {@link Pattern}s, rather than checked for equality as in a standard trie. It will likely perform
@@ -44,7 +44,7 @@ public class RegexTrie<V> {
 
     private V value;
 
-    private final Map<CompPattern, RegexTrie<V>> children;
+    private final Map<ComparablePattern, RegexTrie<V>> children;
 
     public RegexTrie() {
         children = new LinkedHashMap<>();
@@ -74,15 +74,17 @@ public class RegexTrie<V> {
      *        retrieve the associated {@code value}
      */
     public void put(V value, List<?> patterns) {
-        List<CompPattern> list = new ArrayList<>(patterns.size());
+        List<ComparablePattern> list = new ArrayList<>(patterns.size());
         for (Object object : patterns) {
-            CompPattern compPattern = null;
+            ComparablePattern comparablePattern = null;
             if (object instanceof Pattern) {
-                compPattern = new CompPattern((Pattern) object);
+                comparablePattern = new ComparablePattern((Pattern) object);
             } else if (object instanceof String) {
-                compPattern = new CompPattern(Pattern.compile((String) object));
+                if (!((String) object).isEmpty()) {
+                    comparablePattern = new ComparablePattern(Pattern.compile((String) object));
+                }
             }
-            list.add(compPattern);
+            list.add(comparablePattern);
         }
         validateAndPut(value, list);
     }
@@ -129,17 +131,17 @@ public class RegexTrie<V> {
      * A helper method to consolidate validation before adding an entry to the trie.
      *
      * @param value The value to set
-     * @param list The sequence of {@link CompPattern}s that must be sequentially matched to
+     * @param list The sequence of {@link ComparablePattern}s that must be sequentially matched to
      *        retrieve the associated {@code value}
      */
-    private V validateAndPut(V value, List<CompPattern> list) {
+    private V validateAndPut(V value, List<ComparablePattern> list) {
         if (list.size() == 0) {
             throw new IllegalArgumentException("pattern list must be non-empty");
         }
         return recursivePut(value, list);
     }
 
-    private V recursivePut(V value, List<CompPattern> patterns) {
+    private V recursivePut(V value, List<ComparablePattern> patterns) {
         // Cases:
         // 1) patterns is empty -- set our value
         // 2) patterns is non-empty -- recurse downward, creating a child if necessary
@@ -148,8 +150,8 @@ public class RegexTrie<V> {
             this.value = value;
             return oldValue;
         } else {
-            CompPattern curKey = patterns.get(0);
-            List<CompPattern> nextKeys = patterns.subList(1, patterns.size());
+            ComparablePattern curKey = patterns.get(0);
+            List<ComparablePattern> nextKeys = patterns.subList(1, patterns.size());
             // Create a new child to handle
             RegexTrie<V> nextChild = children.get(curKey);
             if (nextChild == null) {
@@ -171,8 +173,8 @@ public class RegexTrie<V> {
             V wildcardValue = null;
             String curKey = strings.get(0);
             List<String> nextKeys = strings.subList(1, strings.size());
-            for (Map.Entry<CompPattern, RegexTrie<V>> child : children.entrySet()) {
-                CompPattern pattern = child.getKey();
+            for (Map.Entry<ComparablePattern, RegexTrie<V>> child : children.entrySet()) {
+                ComparablePattern pattern = child.getKey();
                 if (pattern == null) {
                     wildcardMatch = true;
                     wildcardValue = child.getValue().value;
@@ -213,13 +215,13 @@ public class RegexTrie<V> {
     /**
      * Patterns aren't comparable by default, which prevents you from retrieving them from a Map.
      * This is a simple stub class that makes a Pattern with a working
-     * {@link CompPattern#equals(Object)} method.
+     * {@link ComparablePattern#equals(Object)} method.
      */
-    private static class CompPattern {
+    private static class ComparablePattern {
 
         protected final Pattern pattern;
 
-        CompPattern(Pattern pattern) {
+        ComparablePattern(Pattern pattern) {
             Objects.requireNonNull(pattern);
             this.pattern = pattern;
         }
@@ -229,8 +231,8 @@ public class RegexTrie<V> {
             Pattern otherPat;
             if (other instanceof Pattern) {
                 otherPat = (Pattern) other;
-            } else if (other instanceof CompPattern) {
-                CompPattern otherCPat = (CompPattern) other;
+            } else if (other instanceof RegexTrie.ComparablePattern) {
+                ComparablePattern otherCPat = (ComparablePattern) other;
                 otherPat = otherCPat.pattern;
             } else {
                 return false;

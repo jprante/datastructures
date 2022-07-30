@@ -5,15 +5,16 @@ import java.util.Set;
 
 public interface Trie<T,K extends TrieKey<T>, V> {
 
-    void add(K key, V value);
+    void put(K key, V value);
 
-    V search(K key);
+    V get(K key);
+
+    boolean containsKey(K key);
+
+    Set<K> getKeys();
+
+    int size();
 
     List<V> startsWith(List<TrieKeySegment<T>> prefix);
 
-    boolean contains(K key);
-
-    Set<K> getAllKeys();
-
-    int size();
 }

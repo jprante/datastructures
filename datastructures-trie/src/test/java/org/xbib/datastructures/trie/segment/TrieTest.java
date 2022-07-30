@@ -16,7 +16,7 @@ public class TrieTest {
     public void testEmptyTrie() {
         Trie<String, TrieKey<String>, String> trie = new TrieImpl<>();
         TrieKey<String> trieKey = new TrieKeyImpl<>();
-        String result = trie.search(trieKey);
+        String result = trie.get(trieKey);
         assertNull(result);
     }
 
@@ -24,11 +24,11 @@ public class TrieTest {
     public void testEmptyKey() {
         Trie<String, TrieKey<String>, Integer> trie = new TrieImpl<>();
         TrieKey<String> trieKey = new TrieKeyImpl<>();
-        trie.add(trieKey, 100);
-        Integer result = trie.search(trieKey);
+        trie.put(trieKey, 100);
+        Integer result = trie.get(trieKey);
         assertEquals(result, (Integer) 100);
-        trie.add(trieKey, 200);
-        result = trie.search(trieKey);
+        trie.put(trieKey, 200);
+        result = trie.get(trieKey);
         assertEquals(result, (Integer) 200);
     }
 
@@ -36,8 +36,8 @@ public class TrieTest {
     public void testSingletonTrie() {
         Trie<String, TrieKey<String>, String> trie = new TrieImpl<>();
         TrieKey<String> trieKey = TrieKeyImpl.stringKey("key");
-        trie.add(trieKey, "value");
-        String result = trie.search(trieKey);
+        trie.put(trieKey, "value");
+        String result = trie.get(trieKey);
         assertNotEquals(result, "key");
     }
 
@@ -50,11 +50,11 @@ public class TrieTest {
             Long value = random.nextLong();
             String key = value.toString();
             TrieKey<String> trieKey = TrieKeyImpl.stringKey(key);
-            trie.add(trieKey, value);
+            trie.put(trieKey, value);
             keys.add(trieKey);
         }
         for (TrieKey<String> key : keys) {
-            Long value = trie.search(key);
+            Long value = trie.get(key);
             assertEquals(key.toString(), value.toString());
         }
     }

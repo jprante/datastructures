@@ -15,12 +15,12 @@ public class TrieImpl<T,V> implements Trie<T, TrieKey<T>, V> {
     }
 
     @Override
-    public void add(TrieKey<T> key, V value) {
+    public void put(TrieKey<T> key, V value) {
         addNode(node, key, 0, value);
     }
 
     @Override
-    public V search(TrieKey<T> key) {
+    public V get(TrieKey<T> key) {
         return findKey(node, key);
     }
 
@@ -41,12 +41,12 @@ public class TrieImpl<T,V> implements Trie<T, TrieKey<T>, V> {
     }
 
     @Override
-    public boolean contains(TrieKey<T> key) {
+    public boolean containsKey(TrieKey<T> key) {
         return hasKey(node, key);
     }
 
     @Override
-    public Set<TrieKey<T>> getAllKeys() {
+    public Set<TrieKey<T>> getKeys() {
         Set<TrieKey<T>> keySet = new HashSet<>();
         getKeys(node, new TrieKeyImpl<>(), keySet);
         return keySet;
@@ -54,7 +54,7 @@ public class TrieImpl<T,V> implements Trie<T, TrieKey<T>, V> {
 
     @Override
     public int size() {
-        return getAllKeys().size();
+        return getKeys().size();
     }
      
     private void getValues(Node<T,V> currNode, List<V> valueList) {
@@ -79,7 +79,7 @@ public class TrieImpl<T,V> implements Trie<T, TrieKey<T>, V> {
     }
      
     private V findKey(Node<T,V> currNode, TrieKey<T> key) {
-        TrieKeySegment<T> e = key.size() > 0 ? key.get(0) : null;
+        TrieKeySegment<T> e = key.size() > 0 ? key.getSegment(0) : null;
         if (currNode.getChildren().containsKey(e)) {
             Node<T,V> nextNode = currNode.getChildren().get(e);
             if (key.size() <= 1) {
@@ -94,7 +94,7 @@ public class TrieImpl<T,V> implements Trie<T, TrieKey<T>, V> {
     }
      
     private boolean hasKey(Node<T,V> currNode, TrieKey<T> key) {
-        TrieKeySegment<T> e = key.size() > 0 ? key.get(0) : null;
+        TrieKeySegment<T> e = key.size() > 0 ? key.getSegment(0) : null;
         if (currNode.getChildren().containsKey(e)) {
             Node<T,V> nextNode = currNode.getChildren().get(e);
             if (key.size() <= 1) {
@@ -107,7 +107,7 @@ public class TrieImpl<T,V> implements Trie<T, TrieKey<T>, V> {
     }
      
     private void addNode(Node<T,V> currNode, TrieKey<T> key, int pos, V value) {
-        TrieKeySegment<T> e = pos < key.size() ? key.get(pos) : null;
+        TrieKeySegment<T> e = pos < key.size() ? key.getSegment(pos) : null;
         Node<T,V> nextNode = currNode.getChildren().get(e);
         if (nextNode == null) {
             nextNode = new NodeImpl<>();
