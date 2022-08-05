@@ -9,10 +9,6 @@ import java.util.List;
 import com.incesoft.tools.excel.xlsx.Sheet.SheetRowReader;
 import com.incesoft.tools.excel.xlsx.SimpleXLSXWorkbook.Commiter;
 
-/**
- * @author floyd
- * 
- */
 public class TestSJXLSX {
 
 	public static void addStyleAndRichText(SimpleXLSXWorkbook wb, Sheet sheet)

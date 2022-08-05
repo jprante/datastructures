@@ -1,10 +1,5 @@
 package com.incesoft.tools.excel.xlsx;
 
-
-/**
- * @author floyd
- * 
- */
 public abstract class IndexedObject {
 	int index;
 

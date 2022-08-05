@@ -73,9 +73,6 @@ import java.util.SortedMap;
  * {Lake=Lake, Lax=Lax}
  *
  * </pre>
- *
- * @author Roger Kapsi
- * @author Sam Berlin
  */
 public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> {
 

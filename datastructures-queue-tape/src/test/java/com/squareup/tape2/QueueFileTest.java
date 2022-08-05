@@ -29,8 +29,6 @@ import static org.junit.Assert.fail;
 
 /**
  * Tests for QueueFile.
- *
- * @author Bob Lee (bob@squareup.com)
  */
 @SuppressWarnings("ResultOfMethodCallIgnored")
 @RunWith(Parameterized.class)

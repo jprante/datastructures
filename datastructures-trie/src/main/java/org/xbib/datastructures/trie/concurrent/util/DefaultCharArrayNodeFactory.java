@@ -17,8 +17,6 @@ import java.util.List;
  * <p/>
  * When the application supplies {@link VoidValue} for a value, this factory will omit actually storing that value
  * in the tree and will return one of the VoidValue-optimized nodes above which can reduce memory usage.
- *
- * @author Niall Gallagher
  */
 public class DefaultCharArrayNodeFactory implements NodeFactory {
 

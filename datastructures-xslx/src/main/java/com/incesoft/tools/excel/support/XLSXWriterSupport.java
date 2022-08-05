@@ -12,10 +12,6 @@ import com.incesoft.tools.excel.xlsx.Font;
 import com.incesoft.tools.excel.xlsx.Sheet;
 import com.incesoft.tools.excel.xlsx.SimpleXLSXWorkbook;
 
-/**
- * @author floyd
- * 
- */
 public class XLSXWriterSupport extends WriterSupport {
 	SimpleXLSXWorkbook workbook;
 

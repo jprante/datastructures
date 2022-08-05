@@ -51,8 +51,6 @@ import org.xbib.datastructures.validation.message.MessageFormatter;
  * </pre>
  *
  * @param <E> the type of the errors object
- * @author Toshiaki Maki
- * @since 0.5.0
  */
 public class BiValidatorFactory<E> extends ValidatorFactorySupport {
 	private final ErrorHandler<E> errorHandler;

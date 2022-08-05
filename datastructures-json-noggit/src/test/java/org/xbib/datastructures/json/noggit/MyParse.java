@@ -12,12 +12,6 @@ Leave it to a higher level to validate this?
 The JSON standard says that keys *SHOULD* be unique, not *MUST*!!!
 That means we should support this when parsing.
 */
-
-
-/**
- * @author yonik
- * @version $Id: MyParse.java 479919 2006-11-28 05:53:55Z yonik $
- */
 public class MyParse {
     public static void main(String[] args) throws Exception {
         StringReader sr;

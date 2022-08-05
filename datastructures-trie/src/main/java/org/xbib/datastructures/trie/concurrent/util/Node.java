@@ -66,8 +66,6 @@ import java.util.List;
  *         in a size-reduced encoding such as UTF-8
  *     </li>
  * </ul>
- *
- * @author Niall Gallagher
  */
 public interface Node extends NodeCharacterProvider {
 

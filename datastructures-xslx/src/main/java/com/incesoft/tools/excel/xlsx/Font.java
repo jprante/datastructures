@@ -5,9 +5,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 /**
  * partial font of RichText OR font registered in sharedStrings(index > 0)
- * 
- * @author floyd
- * 
+ *
  */
 public class Font extends IndexedObject implements SerializableEntry {
 	Font() {

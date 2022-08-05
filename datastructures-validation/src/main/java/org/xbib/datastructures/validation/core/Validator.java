@@ -32,7 +32,6 @@ import org.xbib.datastructures.validation.message.MessageFormatter;
  * A <code>Validator</code> instance is immutable and can be used as a singleton.
  *
  * @param <T> the type of the instance to validate
- * @author Toshiaki Maki
  */
 public class Validator<T> implements Validatable<T> {
 	private final List<CollectionValidator<T, ?, ?>> collectionValidators;

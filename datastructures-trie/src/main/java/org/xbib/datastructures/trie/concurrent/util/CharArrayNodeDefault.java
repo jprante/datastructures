@@ -25,8 +25,6 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
  * The constraints defined in the {@link Node} interface ensure that the {@link AtomicReferenceArray} always remains in
  * ascending sorted order regardless of modifications performed concurrently, as long as the modifications comply with
  * the constraints. This node enforces those constraints.
- *
- * @author Niall Gallagher
  */
 public class CharArrayNodeDefault implements Node {
 

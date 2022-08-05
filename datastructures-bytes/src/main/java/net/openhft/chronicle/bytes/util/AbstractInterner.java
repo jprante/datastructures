@@ -37,8 +37,6 @@ import java.util.stream.Stream;
  * though the contents should always be the same.
  * <p>
  * While not technically thread safe, it should still behave correctly.
- *
- * @author peter.lawrey
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 public abstract class AbstractInterner<T> {

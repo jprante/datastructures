@@ -9,7 +9,6 @@ import java.util.NoSuchElementException;
  * This class is inspired by com.google.common.collect.AbstractIterator in Google Guava,
  * which was written by the Google Guava Authors, in particular by Kevin Bourrillion.
  *
- * @author Niall Gallagher
  */
 public abstract class LazyIterator<T> implements Iterator<T> {
 

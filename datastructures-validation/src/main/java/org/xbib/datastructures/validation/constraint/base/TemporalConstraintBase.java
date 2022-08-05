@@ -40,10 +40,6 @@ import static org.xbib.datastructures.validation.core.ViolationMessage.Default.T
 /**
  * This is the base class for constraints on Temporal classes. Methods in the class
  * require the {@link V} to extend Temporal.
- *
- * @author Diego Krupitza
- * @author Toshiaki Maki
- * @since 0.10.0
  */
 public abstract class TemporalConstraintBase<T, V extends TemporalAccessor, C extends Constraint<T, V, C>>
 		extends ConstraintBase<T, V, C> {

@@ -1,10 +1,5 @@
 package com.incesoft.tools.excel.xlsx;
 
-
-/**
- * @author floyd
- * 
- */
 public class Cell {
 	Cell(String r, String s, String t, String v, String text) {
 		this.text = text;

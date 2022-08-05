@@ -25,15 +25,4 @@ public class UTF8Charset extends JavaCharset {
         }
         return bytes.length;
     }
-
-    /**
-     * Does not actually calculate a proper UTF-8 length, but rather a Modified
-     * UTF-8 byte length.  It normally matches a real UTF-8 encoding but isn't
-     * technically completely valid.
-     * @deprecated 
-     */
-    @Deprecated
-    public static int calculateByteLength(final String s) {
-        return ModifiedUTF8Charset.calculateByteLength(s);
-    }
 }

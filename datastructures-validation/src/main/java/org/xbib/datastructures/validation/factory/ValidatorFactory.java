@@ -48,9 +48,6 @@ import org.xbib.datastructures.validation.message.MessageFormatter;
  *     }
  * }
  * </pre>
- *
- * @author Toshiaki Maki
- * @since 0.5.0
  */
 public class ValidatorFactory extends ValidatorFactorySupport {
 

@@ -9,8 +9,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 /**
- * @author floyd
- * 
  * <si> <r><t>afa</t></r> <r><rPr><color rgb="FF0000"/></rPr><t>你好</t></r>
  * <r><t>df</t></r></si>
  */

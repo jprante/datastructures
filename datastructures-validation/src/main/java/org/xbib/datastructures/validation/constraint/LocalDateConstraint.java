@@ -22,9 +22,6 @@ import org.xbib.datastructures.validation.constraint.base.ChronoLocalDateConstra
 
 /**
  * This is the actual class for constraints on LocalDate.
- *
- * @author Diego Krupitza
- * @since 0.10.0
  */
 public class LocalDateConstraint<T>
 		extends ChronoLocalDateConstraintBase<T, LocalDate, LocalDateConstraint<T>> {

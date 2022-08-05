@@ -1,9 +1,5 @@
 package com.incesoft.tools.excel.xlsx;
 
-/**
- * @author floyd
- *
- */
 public class FontRegion {
 
 	public FontRegion(short start, short end, Font font) {

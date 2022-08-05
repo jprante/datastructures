@@ -15,9 +15,7 @@ import com.incesoft.tools.excel.xlsx.SimpleXLSXWorkbook.XMLStreamCreator;
 /**
  * One Sheet in a workbook.It provides read and write functions of the
  * rows/cells.
- * 
- * @author floyd
- * 
+ *
  */
 public class Sheet {
 

@@ -61,7 +61,6 @@ import java.util.SortedMap;
  *
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
- * @author Rohan Suri
  * @see NavigableMap
  * @see BinaryComparable
  */

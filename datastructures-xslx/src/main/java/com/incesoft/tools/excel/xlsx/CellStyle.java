@@ -6,9 +6,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 /**
  * Font registered in styles.xml
- * 
- * @author floyd
- * 
+ *
  */
 public class CellStyle extends IndexedObject implements SerializableEntry {
 	Font font;

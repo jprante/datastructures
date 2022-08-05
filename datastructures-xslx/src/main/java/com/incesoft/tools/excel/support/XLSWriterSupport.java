@@ -20,10 +20,6 @@ import jxl.write.WriteException;
 
 import org.xbib.datastructures.xslx.WriterSupport;
 
-/**
- * @author floyd
- * 
- */
 public class XLSWriterSupport extends WriterSupport {
 	WritableSheet sheet;
 

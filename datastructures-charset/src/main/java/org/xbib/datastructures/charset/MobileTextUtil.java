@@ -1,33 +1,11 @@
 package org.xbib.datastructures.charset;
 
-/*
- * #%L
- * ch-commons-charset
- * %%
- * Copyright (C) 2012 Cloudhopper by Twitter
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-
 import java.text.Normalizer;
 
 /**
  * Utility class for working with text used on mobile phones (primarily SMS).
  * Helpful methods for converting unicode characters into their ascii equivalents
  * such as smart quotes to dumb quotes.
- * 
- * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class MobileTextUtil {
     
@@ -49,7 +27,7 @@ public class MobileTextUtil {
         { '\u2026', '.' }, // actually "...", but just replacing with "."
         { '\u2039', '<' },
         { '\u203A', '>' },
-        /** deprecated at recommendation by Turkcell - these replacements changed meaning too much */
+        // deprecated at recommendation by Turkcell - these replacements changed meaning too much
         //{ '\u0131', '1' }, // U+0131 is a lower case letter dotless i (ı)
         //{ '\u0130', 'i' }, // U+0130 (İ) is capital i with dot
     };
@@ -70,10 +48,10 @@ public class MobileTextUtil {
         int replaced = 0;
         for (int i = 0; i < buffer.length(); i++) {
             char c = buffer.charAt(i);
-            for (int j = 0; j < CHAR_TABLE.length; j++) {
-                if (c == CHAR_TABLE[j][0]) {
+            for (char[] chars : CHAR_TABLE) {
+                if (c == chars[0]) {
                     replaced++;
-                    buffer.setCharAt(i, CHAR_TABLE[j][1]);
+                    buffer.setCharAt(i, chars[1]);
                 }
             }
         }

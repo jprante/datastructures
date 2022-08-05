@@ -21,9 +21,6 @@ import org.xbib.datastructures.validation.core.Constraint;
 
 /**
  * This is the base class for constraints on ChronoLocalDateTime.
- *
- * @author Diego Krupitza
- * @since 0.10.0
  */
 public abstract class ChronoLocalDateTimeConstraintBase<T, V extends ChronoLocalDateTime<?>, C extends Constraint<T, V, C>>
 		extends TemporalConstraintBase<T, V, C> {

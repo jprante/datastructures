@@ -2,8 +2,6 @@ package org.xbib.datastructures.json.simple;
 
 /**
  * ParseException explains why and where the error occurs in source JSON text.
- *
- * @author FangYidong&lt;fangyidong@yahoo.com.cn&gt;
  */
 public class ParseException extends Exception {
     private static final long serialVersionUID = -7880698968187728547L;

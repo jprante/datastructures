@@ -22,9 +22,6 @@ import org.xbib.datastructures.validation.constraint.base.TemporalConstraintBase
 
 /**
  * This is the actual class for constraints on LocalTime.
- *
- * @author Diego Krupitza
- * @since 0.10.0
  */
 public class LocalTimeConstraint<T>
 		extends TemporalConstraintBase<T, LocalTime, LocalTimeConstraint<T>> {

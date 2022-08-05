@@ -36,8 +36,6 @@ import java.util.function.BiConsumer;
  *
  * @param <T> the type of the instance to validate
  * @param <E> the type of the errors object
- * @author Toshiaki Maki
- * @since 0.5.0
  */
 public class BiValidator<T, E> implements BiConsumer<T, E> {
 	private final Validator<T> validator;
