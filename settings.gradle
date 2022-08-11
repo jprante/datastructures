@@ -32,7 +32,6 @@ dependencyResolutionManagement {
 
 include 'datastructures-api'
 include 'datastructures-io'
-include 'datastructures-bytes'
 include 'datastructures-charset'
 include 'datastructures-common'
 include 'datastructures-xml'

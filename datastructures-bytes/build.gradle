@@ -1,6 +1,0 @@
-dependencies {
-    api libs.chronicle.core
-    testImplementation libs.junit.vintage.engine
-    testImplementation libs.junit4
-    testImplementation libs.affinity
-}
