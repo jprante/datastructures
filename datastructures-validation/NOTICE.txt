@@ -1,0 +1,9 @@
+This work is based on
+
+https://github.com/making/yavi
+
+by Toshiaki Maki
+
+as of 29-Apr-2022
+
+(Apache 2.0 License)
