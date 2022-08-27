@@ -1,4 +1,3 @@
 dependencies {
-    api libs.jsr305
     testImplementation libs.junit4
 }

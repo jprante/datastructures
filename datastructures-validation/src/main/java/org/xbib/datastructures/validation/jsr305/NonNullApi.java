@@ -6,9 +6,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.xbib.annotation.Nonnull;
-import org.xbib.annotation.meta.TypeQualifierDefault;
-
 /**
  * A common annotation (similar to Spring one) to declare that parameters and return
  * values are to be considered as non-nullable by default for a given package. Leverages
@@ -25,7 +22,5 @@ import org.xbib.annotation.meta.TypeQualifierDefault;
 @Target(ElementType.PACKAGE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Nonnull
-@TypeQualifierDefault({ ElementType.METHOD, ElementType.PARAMETER })
 public @interface NonNullApi {
 }

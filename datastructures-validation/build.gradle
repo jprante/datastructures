@@ -1,5 +1,4 @@
 dependencies {
-    api libs.jsr305
     testImplementation libs.assertj
     testImplementation libs.compile.testing
 }

@@ -6,9 +6,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.xbib.annotation.Nonnull;
-import org.xbib.annotation.meta.TypeQualifierNickname;
-
 /**
  * A common annotation (similar to Spring ones) to declare that annotated elements
  * cannot be {@code null}. Leverages JSR 305 meta-annotations to indicate nullability in
@@ -29,7 +26,5 @@ import org.xbib.annotation.meta.TypeQualifierNickname;
 @Target({ ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Nonnull
-@TypeQualifierNickname
 public @interface NonNull {
 }
