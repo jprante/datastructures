@@ -1,5 +1,12 @@
-package com.incesoft.tools.excel.xlsx;
+package org.xbib.datastructures.xslx;
 
+import com.incesoft.tools.excel.xlsx.Cell;
+import com.incesoft.tools.excel.xlsx.CellStyle;
+import com.incesoft.tools.excel.xlsx.Fill;
+import com.incesoft.tools.excel.xlsx.Font;
+import com.incesoft.tools.excel.xlsx.RichText;
+import com.incesoft.tools.excel.xlsx.Sheet;
+import com.incesoft.tools.excel.xlsx.SimpleXLSXWorkbook;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;

@@ -1,0 +1,15 @@
+datastructures-xslx is composed of the following works
+
+jxl
+https://sourceforge.net/projects/jexcelapi/
+GNU Library or Lesser General Public License version 2.0 (LGPLv2)
+
+with the log4j dependency removed
+
+and
+
+com.incesoft.tools.excel
+https://code.google.com/archive/p/sjxslx/ -> https://github.com/davidpelfree/sjxlsx
+License: Apache License 2.0
+
+The code will be refactored to the org.xbib package group.
