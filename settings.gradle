@@ -2,7 +2,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         libs {
             version('gradle', '7.5')
-            version('junit', '5.9.0')
+            version('junit', '5.8.2')
             version('jackson', '2.12.7')
             library('junit-jupiter-api', 'org.junit.jupiter', 'junit-jupiter-api').versionRef('junit')
             library('junit-jupiter-params', 'org.junit.jupiter', 'junit-jupiter-params').versionRef('junit')
@@ -24,6 +24,7 @@ dependencyResolutionManagement {
             library('okio', 'com.squareup.okio', 'okio').version('1.13.0')
             library('assertj', 'org.assertj', 'assertj-core').version('3.22.0')
             library('compile-testing', 'com.google.testing.compile', 'compile-testing').version('0.19')
+            library('jxl', 'net.sourceforge.jexcelapi', 'jxl').version('2.6.12')
         }
     }
 }
