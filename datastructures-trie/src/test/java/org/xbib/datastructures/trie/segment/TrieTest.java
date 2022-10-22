@@ -43,13 +43,12 @@ public class TrieTest {
 
     @Test
     public void testLargeInsertionAndSearch() {
+        Random random = new Random();
         Trie<String, TrieKey<String>, Long> trie = new TrieImpl<>();
         List<TrieKey<String>> keys = new ArrayList<>();
         for (int i = 0; i < 10000; i++) {
-            Random random = new Random();
             Long value = random.nextLong();
-            String key = value.toString();
-            TrieKey<String> trieKey = TrieKeyImpl.stringKey(key);
+            TrieKey<String> trieKey = TrieKeyImpl.stringKey(value.toString());
             trie.put(trieKey, value);
             keys.add(trieKey);
         }
