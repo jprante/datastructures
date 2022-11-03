@@ -6,6 +6,9 @@ import java.util.List;
 
 public class ListNode extends TinyList.Builder<Node<?>> implements org.xbib.datastructures.api.ListNode {
 
+    public ListNode() {
+    }
+
     public boolean has(int i) {
         return i >= 0 && i < size() && get(i) == null;
     }

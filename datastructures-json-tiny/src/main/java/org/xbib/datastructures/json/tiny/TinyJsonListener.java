@@ -17,6 +17,9 @@ public class TinyJsonListener implements JsonResult {
 
     private final ValueNode FALSE_NODE = new ValueNode(Boolean.FALSE);
 
+    public TinyJsonListener() {
+    }
+
     @Override
     public Node<?> getResult() {
         return node;

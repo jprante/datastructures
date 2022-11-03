@@ -2,6 +2,9 @@ package org.xbib.datastructures.common;
 
 public class Utf8Util {
 
+    public Utf8Util() {
+    }
+
     public static String decode(byte[] data, int offset, int length) {
         char[] chars = new char[length];
         int len = 0;

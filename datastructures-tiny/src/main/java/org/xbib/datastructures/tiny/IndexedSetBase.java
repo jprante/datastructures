@@ -5,6 +5,9 @@ import java.util.Set;
 
 public abstract class IndexedSetBase<T> extends IndexedCollectionBase<T> implements IndexedSet<T> {
 
+    public IndexedSetBase() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

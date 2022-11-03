@@ -8,6 +8,9 @@ import java.util.function.Consumer;
 
 public abstract class IndexedListBase<T> extends IndexedCollectionBase<T> implements IndexedList<T> {
 
+    public IndexedListBase() {
+    }
+
     @Override
     public boolean addAll(int index, Collection<? extends T> collection) {
         boolean added = false;

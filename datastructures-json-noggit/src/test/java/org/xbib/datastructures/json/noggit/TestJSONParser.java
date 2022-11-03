@@ -247,10 +247,10 @@ public class TestJSONParser {
                                 ret += parser.getNumberChars().length();
                                 break;
                             case JSONParser.NUMBER:
-                                ret += parser.getDouble();
+                                ret = ret + (int)parser.getDouble();
                                 break;
                             case JSONParser.LONG:
-                                ret += parser.getLong();
+                                ret = ret + (int)parser.getLong();
                                 break;
                             default:
                                 ret += ev;

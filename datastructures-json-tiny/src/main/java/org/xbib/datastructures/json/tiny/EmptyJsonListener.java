@@ -6,6 +6,9 @@ import java.util.Deque;
 
 public class EmptyJsonListener implements JsonResult {
 
+    public EmptyJsonListener() {
+    }
+
     @Override
     public void begin() {
     }

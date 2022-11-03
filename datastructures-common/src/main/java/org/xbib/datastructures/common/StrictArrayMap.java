@@ -1,6 +1,5 @@
 package org.xbib.datastructures.common;
 
-import org.xbib.datastructures.common.StrictArraySet;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Map;
@@ -77,7 +76,7 @@ public class StrictArrayMap<K, V> extends AbstractMap<K, V> implements Map<K, V>
     public V get(Object key) {
         for (int i = 0; i < keys.length; i++ ) {
             if (keys[i].equals(key)) {
-                return (V) values[i];
+                return values[i];
             }
         }
         return null;
@@ -113,10 +112,10 @@ public class StrictArrayMap<K, V> extends AbstractMap<K, V> implements Map<K, V>
         return new StrictArraySet<>(values);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public Set<Entry<K, V>> entrySet() {
-        Entry<K, V>[] entries = new Map.Entry[keys.length];
+        Map.Entry<K, V>[] entries = new Map.Entry[keys.length];
         for (int i = 0; i < keys.length; i++) {
             entries[i] = new EntryHolder<>(keys[i], values[i]);
         }

@@ -8,6 +8,9 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class StandardListNode extends ArrayList<Object> implements Node<List<Object>> {
 
+    public StandardListNode() {
+    }
+
     public boolean has(int i) {
         return i >= 0 && i < size() && get(i) == null;
     }

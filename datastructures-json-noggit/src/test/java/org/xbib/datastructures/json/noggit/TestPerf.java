@@ -135,7 +135,7 @@ public class TestPerf {
                     ret += parser.getNumberChars().length();
                     break;
                 case JSONParser.NUMBER:
-                    ret += Double.doubleToRawLongBits(parser.getDouble());
+                    ret = ret + (int)Double.doubleToRawLongBits(parser.getDouble());
                     break;
                 case JSONParser.ARRAY_START:
                     ret += 13;

@@ -6,7 +6,11 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 
 public abstract class IndexedMapBase<K, V> implements IndexedMap<K, V> {
+
     private static final Object SENTINEL = new Object();
+
+    public IndexedMapBase() {
+    }
 
     @Override
     public V getOrDefault(Object key, V defaultValue) {

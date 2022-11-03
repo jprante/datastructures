@@ -271,7 +271,7 @@ public class StreamParser implements Parser {
 
     private void expectChar(char expected) throws JsonException {
         if (ch != expected) {
-            throw new JsonException("expected char " + (char)expected + " but got " + (char)ch);
+            throw new JsonException("expected char " + expected + " but got " + (char)ch);
         }
     }
 

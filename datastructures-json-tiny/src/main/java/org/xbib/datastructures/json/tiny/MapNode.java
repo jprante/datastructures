@@ -6,6 +6,9 @@ import java.util.Map;
 
 public class MapNode extends TinyMap.Builder<CharSequence, Node<?>> implements org.xbib.datastructures.api.MapNode {
 
+    public MapNode() {
+    }
+
     public boolean has(String name) {
         return containsKey(name);
     }

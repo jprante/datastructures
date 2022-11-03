@@ -17,6 +17,9 @@ public class StandardJsonListener implements JsonResult {
 
     private final ValueNode FALSE_NODE = new ValueNode(Boolean.FALSE);
 
+    public StandardJsonListener() {
+    }
+
     public Deque<Node<?>> getStack() {
         return stack;
     }

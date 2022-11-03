@@ -8,6 +8,9 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class StandardMapNode extends LinkedHashMap<CharSequence, Object> implements Node<Map<CharSequence, Object>> {
 
+    public StandardMapNode() {
+    }
+
     public boolean has(String name) {
         return containsKey(name);
     }

@@ -5,6 +5,9 @@ import java.util.Objects;
 
 public abstract class TinySet<T> extends IndexedSetBase<T> {
 
+    public TinySet() {
+    }
+
     public static int tableSize(int length) {
         return Integer.highestOneBit(length * 2 - 1) * 2;
     }

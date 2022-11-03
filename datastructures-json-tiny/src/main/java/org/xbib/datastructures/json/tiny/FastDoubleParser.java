@@ -156,7 +156,7 @@ public class FastDoubleParser {
             if (neg_exp) {
                 exp_number = -exp_number;
             }
-            exponent += exp_number;
+            exponent = exponent + (int)exp_number;
         }
         index = skipWhitespace(str, index, endIndex);
         if (index < endIndex
@@ -164,7 +164,7 @@ public class FastDoubleParser {
             throw newNumberFormatException(str);
         }
         final boolean isDigitsTruncated;
-        int skipCountInTruncatedDigits = 0;//counts +1 if we skipped over the decimal point
+        int skipCountInTruncatedDigits = 0;
         if (digitCount > 19) {
             digits = 0;
             for (index = indexOfFirstDigit; index < indexAfterDigits; index++) {
@@ -231,10 +231,7 @@ public class FastDoubleParser {
         if (index >= endIndex) {
             throw newNumberFormatException(str);
         }
-
-        // Parse digits
-        // ------------
-        long digits = 0;// digits is treated as an unsigned long
+        long digits = 0;
         int exponent = 0;
         final int indexOfFirstDigit = index;
         int virtualIndexOfPoint = -1;
@@ -242,10 +239,9 @@ public class FastDoubleParser {
         char ch = 0;
         for (; index < endIndex; index++) {
             ch = str.charAt(index);
-            // Table look up is faster than a sequence of if-else-branches.
             int hexValue = ch > 255 ? OTHER_CLASS : CHAR_TO_HEX_MAP[ch];
             if (hexValue >= 0) {
-                digits = (digits << 4) | hexValue;// This might overflow, we deal with it later.
+                digits = (digits << 4) | hexValue;
             } else if (hexValue == DECIMAL_POINT_CLASS) {
                 if (virtualIndexOfPoint != -1) {
                     throw newNumberFormatException(str);
@@ -263,9 +259,6 @@ public class FastDoubleParser {
             digitCount = indexAfterDigits - indexOfFirstDigit - 1;
             exponent = Math.min(virtualIndexOfPoint - index + 1, MINIMAL_EIGHT_DIGIT_INTEGER) * 4;
         }
-
-        // Parse exponent number
-        // ---------------------
         long exp_number = 0;
         final boolean hasExponent = (ch == 'p') || (ch == 'P');
         if (hasExponent) {
@@ -278,7 +271,6 @@ public class FastDoubleParser {
                 throw newNumberFormatException(str);
             }
             do {
-                // Guard against overflow of exp_number
                 if (exp_number < MINIMAL_EIGHT_DIGIT_INTEGER) {
                     exp_number = 10 * exp_number + ch - '0';
                 }
@@ -287,27 +279,20 @@ public class FastDoubleParser {
             if (neg_exp) {
                 exp_number = -exp_number;
             }
-            exponent += exp_number;
+            exponent = exponent + (int)exp_number;
         }
-
-        // Skip trailing whitespace
-        // ------------------------
         index = skipWhitespace(str, index, endIndex);
         if (index < endIndex
                 || digitCount == 0 && str.charAt(virtualIndexOfPoint) != '.'
                 || !hasExponent) {
             throw newNumberFormatException(str);
         }
-
-        // Re-parse digits in case of a potential overflow
-        // -----------------------------------------------
         final boolean isDigitsTruncated;
-        int skipCountInTruncatedDigits = 0;//counts +1 if we skipped over the decimal point
+        int skipCountInTruncatedDigits = 0;
         if (digitCount > 16) {
             digits = 0;
             for (index = indexOfFirstDigit; index < indexAfterDigits; index++) {
                 ch = str.charAt(index);
-                // Table look up is faster than a sequence of if-else-branches.
                 int hexValue = ch > 127 ? OTHER_CLASS : CHAR_TO_HEX_MAP[ch];
                 if (hexValue >= 0) {
                     if (Long.compareUnsigned(digits, MINIMAL_NINETEEN_DIGIT_INTEGER) < 0) {
