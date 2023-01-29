@@ -572,9 +572,6 @@ public class Json {
         }
 
         public JsonBuilder buildNull() throws IOException {
-            if (state.structure == Structure.COLLECTION) {
-                beginArrayValue();
-            }
             buildString("null", false);
             return this;
         }
