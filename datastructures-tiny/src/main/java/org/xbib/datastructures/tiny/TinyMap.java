@@ -174,7 +174,7 @@ public abstract class TinyMap<K, V> extends IndexedMapBase<K, V>  {
         public TinyMap<K, V> buildWithKeys(TinySet<K> keys) {
             compact();
             Preconditions.checkArgument(keys.size() == size(),
-                    "Must have same size");
+                    "keys does not have same size after compact: keys = " + keys.size() + " size = " + size());
             return new SizeAny<>(keys, Arrays.copyOf(values, keys.size()));
         }
 
