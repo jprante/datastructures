@@ -14,6 +14,17 @@ public class Maps {
     private Maps() {
     }
 
+    @SuppressWarnings("unchecked")
+    public static List<Map<String, Object>> getListMap(Map<String, Object> map, String key) {
+        Object o = get(map, key);
+        if (o instanceof List) {
+            return (List<Map<String, Object>>) o;
+        } else if (o instanceof Map) {
+            return List.of((Map<String, Object>) o);
+        }
+        return List.of();
+    }
+
     @SuppressWarnings({"unchecked"})
     public static Map<String, Object> deepMerge(Map<String, Object> map, Map<String, Object> newMap) {
         for (Map.Entry<String, Object> e : newMap.entrySet()) {
@@ -102,7 +113,7 @@ public class Maps {
                 }
             } else if (oo instanceof List) {
                 List<?> l = (List<?>) oo;
-                return (T) l.get(0);
+                return (T) l;
             } else {
                 return (T) oo;
             }
