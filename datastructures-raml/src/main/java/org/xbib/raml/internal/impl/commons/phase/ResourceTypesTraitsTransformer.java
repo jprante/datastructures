@@ -1,0 +1,307 @@
+/*
+ * Copyright 2013 (c) MuleSoft, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
+/*
+ *
+ */
+package org.xbib.raml.internal.impl.commons.phase;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.xbib.raml.internal.impl.commons.grammar.BaseRamlGrammar;
+import org.xbib.raml.internal.impl.commons.nodes.BaseResourceTypeRefNode;
+import org.xbib.raml.internal.impl.commons.nodes.BaseTraitRefNode;
+import org.xbib.raml.internal.impl.commons.nodes.MethodNode;
+import org.xbib.raml.internal.impl.commons.nodes.ParametrizedReferenceNode;
+import org.xbib.raml.internal.impl.commons.nodes.ResourceNode;
+import org.xbib.raml.internal.impl.commons.nodes.ResourceTypeNode;
+import org.xbib.raml.internal.impl.commons.nodes.StringTemplateNode;
+import org.xbib.raml.internal.impl.commons.nodes.TraitNode;
+import org.xbib.raml.internal.impl.v10.phase.ReferenceResolverTransformer;
+import org.xbib.raml.yagi.framework.grammar.rule.ErrorNodeFactory;
+import org.xbib.raml.yagi.framework.nodes.ErrorNode;
+import org.xbib.raml.yagi.framework.nodes.ExecutionContext;
+import org.xbib.raml.yagi.framework.nodes.KeyValueNode;
+import org.xbib.raml.yagi.framework.nodes.Node;
+import org.xbib.raml.yagi.framework.nodes.NullNode;
+import org.xbib.raml.yagi.framework.nodes.ReferenceNode;
+import org.xbib.raml.yagi.framework.nodes.StringNode;
+import org.xbib.raml.yagi.framework.nodes.StringNodeImpl;
+import org.xbib.raml.yagi.framework.nodes.snakeyaml.SYBaseRamlNode;
+import org.xbib.raml.yagi.framework.nodes.snakeyaml.SYNullNode;
+import org.xbib.raml.yagi.framework.nodes.snakeyaml.SYObjectNode;
+import org.xbib.raml.yagi.framework.phase.GrammarPhase;
+import org.xbib.raml.yagi.framework.phase.Phase;
+import org.xbib.raml.yagi.framework.phase.TransformationPhase;
+import org.xbib.raml.yagi.framework.phase.Transformer;
+import org.xbib.raml.yagi.framework.util.NodeSelector;
+import org.xbib.raml.yagi.framework.util.NodeUtils;
+import static org.xbib.raml.internal.impl.commons.phase.ResourceTypesTraitsMerger.merge;
+
+public class ResourceTypesTraitsTransformer implements Transformer {
+
+    private final Set<ResourceNode> mergedResources = new HashSet<>();
+    private final BaseRamlGrammar ramlGrammar;
+
+    public ResourceTypesTraitsTransformer(BaseRamlGrammar ramlGrammar) {
+        this.ramlGrammar = ramlGrammar;
+    }
+
+    @Override
+    public boolean matches(Node node) {
+        return (node instanceof BaseTraitRefNode ||
+                node instanceof BaseResourceTypeRefNode) &&
+                node.findAncestorWith(ResourceNode.class) != null;
+    }
+
+    @Override
+    public Node transform(Node node) {
+        ResourceNode resourceNode = node.findAncestorWith(ResourceNode.class);
+        if (mergedResources.contains(resourceNode)) {
+            return node;
+        }
+
+
+        // apply method and resource traits if defined
+        checkTraits(resourceNode, resourceNode);
+
+        // apply resource type if defined
+        ReferenceNode resourceTypeReference = findResourceTypeReference(resourceNode);
+        if (resourceTypeReference != null) {
+            List<KeyValueNode> typeNodes = new ArrayList<>();
+            typeNodes.add(resourceNode);
+            typeNodes.add((KeyValueNode) resourceTypeReference.getRefNode());
+            findTheStuff((ResourceTypeNode) resourceTypeReference.getRefNode(), typeNodes);
+
+            applyResourceType(resourceNode, resourceTypeReference, resourceNode, typeNodes);
+        }
+        mergedResources.add(resourceNode);
+        return node;
+    }
+
+    private void checkTraits(KeyValueNode resourceNode, ResourceNode baseResourceNode) {
+        final List<MethodNode> methodNodes = findMethodNodes(resourceNode);
+        final List<ReferenceNode> resourceTraitRefs = findTraitReferences(resourceNode);
+
+        for (MethodNode methodNode : methodNodes) {
+            final List<ReferenceNode> traitRefs = findTraitReferences(methodNode);
+            traitRefs.addAll(resourceTraitRefs);
+            for (final ReferenceNode traitRef : traitRefs) {
+                applyTrait(methodNode, traitRef, baseResourceNode);
+            }
+        }
+    }
+
+    private void applyResourceType(KeyValueNode targetNode, ReferenceNode resourceTypeReference, ResourceNode baseResourceNode, List<KeyValueNode> typeNodes) {
+
+        ResourceTypeNode refNode = (ResourceTypeNode) resourceTypeReference.getRefNode();
+        if (refNode.getValue() instanceof NullNode) {
+            // empty resource type
+            return;
+        }
+
+        ResourceTypeNode templateNode = refNode.copy();
+        templateNode.setParent(refNode.getParent());
+
+        // generateDefinition parameters
+        Map<String, Node> parameters = getBuiltinResourceTypeParameters(baseResourceNode);
+        if (resourceTypeReference instanceof ParametrizedReferenceNode) {
+            parameters.putAll(((ParametrizedReferenceNode) resourceTypeReference).getParameters());
+        }
+        resolveParameters(templateNode, parameters, NodeUtils.getContextNode(baseResourceNode));
+
+        // apply grammar phase to generate method nodes
+        GrammarPhase grammarPhase = new GrammarPhase(ramlGrammar.resourceTypeParamsResolved());
+        // generateDefinition references
+        TransformationPhase referenceResolution = new TransformationPhase(new ReferenceResolverTransformer());
+        // resolves types
+
+        grammarPhase.apply(templateNode.getValue());
+
+        removeUnimplementedOptionalMethods(templateNode, typeNodes);
+
+        boolean success = applyPhases(templateNode, referenceResolution);
+
+        if (success) {
+            // apply traits
+            checkTraits(templateNode, baseResourceNode);
+
+            // generateDefinition inheritance
+            ReferenceNode parentTypeReference = findResourceTypeReference(templateNode);
+            if (parentTypeReference != null) {
+                applyResourceType(templateNode, parentTypeReference, baseResourceNode, typeNodes);
+            }
+        }
+
+        merge(targetNode.getValue(), templateNode.getValue());
+    }
+
+    private void findTheStuff(ResourceTypeNode templateNode, List<KeyValueNode> nodes) {
+
+        ReferenceNode parentTypeReference = findResourceTypeReference(templateNode);
+        if (parentTypeReference != null) {
+            ResourceTypeNode resourceTypeNode = (ResourceTypeNode) parentTypeReference.getRefNode();
+            nodes.add(resourceTypeNode);
+            findTheStuff(resourceTypeNode, nodes);
+        }
+    }
+
+    private void removeUnimplementedOptionalMethods(ResourceTypeNode templateNode, List<KeyValueNode> typeNodes) {
+        final List<MethodNode> unimplementedMethods = new ArrayList<>();
+        for (MethodNode node : findMethodNodes(templateNode)) {
+            String key = node.getName();
+            if (!key.endsWith("?"))
+                continue;
+
+            key = key.substring(0, key.length() - 1);
+
+            boolean found = false;
+            for (KeyValueNode typeNode : typeNodes) {
+
+                if (typeNode.getKey().toString().equals(templateNode.getKey().toString())) {
+                    break;
+                }
+
+                Node methodInTemplateNode = NodeSelector.selectFrom(NodeSelector.encodePath(key), typeNode.getValue());
+                if (methodInTemplateNode != null) {
+                    found = true;
+                }
+            }
+
+            if (!found)
+                unimplementedMethods.add(node);
+        }
+
+        for (MethodNode unimplementedMethod : unimplementedMethods) {
+            templateNode.getValue().removeChild(unimplementedMethod);
+        }
+    }
+
+    private boolean applyPhases(KeyValueNode templateNode, Phase... phases) {
+        List<ErrorNode> errorNodes = templateNode.findDescendantsWith(ErrorNode.class);
+        if (errorNodes.isEmpty()) {
+            for (Phase phase : phases) {
+                phase.apply(templateNode.getValue());
+                errorNodes = templateNode.findDescendantsWith(ErrorNode.class);
+                if (!errorNodes.isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+
+    }
+
+    private Map<String, Node> getBuiltinResourceTypeParameters(ResourceNode resourceNode) {
+        Map<String, Node> parameters = new HashMap<>();
+        parameters.put("resourcePathName", new StringNodeImpl(resourceNode.getResourcePathName()));
+        parameters.put("resourcePath", new StringNodeImpl(resourceNode.getResourcePath()));
+        return parameters;
+    }
+
+    private Map<String, Node> getBuiltinTraitParameters(MethodNode methodNode, ResourceNode resourceNode) {
+        Map<String, Node> parameters = getBuiltinResourceTypeParameters(resourceNode);
+        parameters.put("methodName", new StringNodeImpl(methodNode.getName()));
+        return parameters;
+    }
+
+    private void applyTrait(MethodNode methodNode, ReferenceNode traitReference, ResourceNode baseResourceNode) {
+        TraitNode refNode = (TraitNode) traitReference.getRefNode();
+        if (refNode.getValue() instanceof NullNode) {
+            // empty trait
+            return;
+        }
+
+        TraitNode copy = refNode.copy();
+        copy.setParent(refNode.getParent());
+
+        replaceNullValueWithObject(copy);
+
+        // generateDefinition parameters
+        Map<String, Node> parameters = getBuiltinTraitParameters(methodNode, baseResourceNode);
+        if (traitReference instanceof ParametrizedReferenceNode) {
+            parameters.putAll(((ParametrizedReferenceNode) traitReference).getParameters());
+        }
+        resolveParameters(copy, parameters, NodeUtils.getContextNode(methodNode));
+
+        // apply grammar phase to generate method nodes
+        GrammarPhase validatePhase = new GrammarPhase(ramlGrammar.traitParamsResolved());
+
+        // generateDefinition references
+        TransformationPhase referenceResolution = new TransformationPhase(new ReferenceResolverTransformer());
+        // resolves types
+        applyPhases(copy, validatePhase, referenceResolution);
+
+        replaceNullValueWithObject(methodNode);
+        merge(methodNode.getValue(), copy.getValue());
+    }
+
+    private void resolveParameters(Node parameterizedNode, Map<String, Node> parameters, Node referenceContext) {
+        ExecutionContext context = new ExecutionContext(parameters, referenceContext);
+        List<StringTemplateNode> templateNodes = parameterizedNode.findDescendantsWith(StringTemplateNode.class);
+        for (StringTemplateNode templateNode : templateNodes) {
+            Node resolvedNode = templateNode.execute(context);
+            templateNode.replaceTree(resolvedNode);
+
+        }
+    }
+
+    private void replaceNullValueWithObject(KeyValueNode keyValueNode) {
+        Node valueNode = keyValueNode.getValue();
+        if (valueNode instanceof SYNullNode) {
+            final SYBaseRamlNode ramlNode = (SYBaseRamlNode) valueNode;
+            valueNode = new SYObjectNode(ramlNode);
+            keyValueNode.setValue(valueNode);
+        }
+    }
+
+    private List<ReferenceNode> findTraitReferences(KeyValueNode keyValueNode) {
+        List<ReferenceNode> result = new ArrayList<>();
+        Node isNode = NodeSelector.selectFrom("is", keyValueNode.getValue());
+        if (isNode != null) {
+            List<Node> children = isNode.getChildren();
+            for (Node child : children) {
+                result.add((ReferenceNode) child);
+            }
+        }
+        return result;
+    }
+
+    private ReferenceNode findResourceTypeReference(KeyValueNode resourceNode) {
+        Node node = NodeSelector.selectFrom("type", resourceNode.getValue());
+        if (node == null || node instanceof ReferenceNode) {
+            return (ReferenceNode) node;
+        } else {
+            ErrorNode errorNode = ErrorNodeFactory.createInvalidReferenceNode((StringNode) node);
+            resourceNode.getValue().replaceWith(errorNode);
+            return null;
+        }
+    }
+
+    private List<MethodNode> findMethodNodes(KeyValueNode resourceNode) {
+        List<MethodNode> methodNodes = new ArrayList<>();
+        for (Node node : resourceNode.getValue().getChildren()) {
+            if (node instanceof MethodNode) {
+                methodNodes.add((MethodNode) node);
+            }
+        }
+        return methodNodes;
+    }
+
+}

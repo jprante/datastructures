@@ -1,0 +1,9 @@
+dependencies {
+    implementation 'javax.json:javax.json-api:1.1.4'
+    implementation 'org.apache.ws.xmlschema:xmlschema-core:2.3.0'
+    implementation('com.github.fge:json-schema-validator:2.2.6') {
+        exclude group: 'com.google.guava'
+    }
+    implementation 'org.yaml:snakeyaml:2.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+}
