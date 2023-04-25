@@ -224,13 +224,21 @@ public class TinyMapTest {
         assertEquals(1, builder.build().size());
     }
 
+    @Test
+    public void testPutIfNotNull() {
+        TinyMap.Builder<String, Object> builder = TinyMap.builder();
+        builder.putIfNotNull("a", "b");
+        builder.putIfNotNull("c", null);
+        assertEquals(1, builder.build().size());
+    }
+
     private void testCount(int count, boolean withNull) {
         TinyMap.Builder<String, Object> builder = TinyMap.builder();
         LinkedHashMap<String, Object> expectedMap = new LinkedHashMap<>();
         for (int i = 0; i < count; i++) {
-            if (count < 1000)
+            if (count < 1000) {
                 builder.build();
-
+            }
             builder.putAll(Collections.singletonMap("aaa" + i, i));
             expectedMap.put("aaa" + i, i);
         }

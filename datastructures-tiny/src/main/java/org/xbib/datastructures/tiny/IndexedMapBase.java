@@ -101,6 +101,11 @@ public abstract class IndexedMapBase<K, V> implements IndexedMap<K, V> {
     }
 
     @Override
+    public V putIfNotNull(K key, V value) {
+        throw new UnsupportedOperationException("modification not supported: " + this);
+    }
+
+    @Override
     public V remove(Object key) {
         int index = getIndex(key);
         if (index < 0) {

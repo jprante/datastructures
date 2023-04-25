@@ -91,6 +91,11 @@ public abstract class TinyMap<K, V> extends IndexedMapBase<K, V>  {
         }
 
         @Override
+        public V putIfNotNull(K key, V value) {
+            return value != null ? put(key, value) : null;
+        }
+
+        @Override
         public int getIndex(Object key) {
             return keys.getIndex(key);
         }

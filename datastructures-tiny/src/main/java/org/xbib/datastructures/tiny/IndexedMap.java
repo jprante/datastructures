@@ -16,6 +16,8 @@ public interface IndexedMap<K, V> extends Map<K, V> {
 
     V setValueAt(int index, V value);
 
+    V putIfNotNull(K key, V value);
+
     boolean isRemoved(int index);
 
     int rawSize();

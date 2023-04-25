@@ -38,7 +38,7 @@ public class NodeUtil {
      * the constraints documented in this method
      *
      * @param edgeFirstCharacter The first character of the edge for which the associated node is required
-     * @return The index of the node representing the indicated edge, or a value < 0 if no such node exists in the
+     * @return The index of the node representing the indicated edge, or a value &lt; 0 if no such node exists in the
      * array
      */
     public static int binarySearchForEdge(AtomicReferenceArray<Node> childNodes, Character edgeFirstCharacter) {

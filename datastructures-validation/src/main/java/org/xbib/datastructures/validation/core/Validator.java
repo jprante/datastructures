@@ -125,11 +125,6 @@ public class Validator<T> implements Validatable<T> {
 		this.collectionValidators.forEach(action);
 	}
 
-	/**
-	 * This method is supposed to be used only internally.
-	 *
-	 * @param action callback per <code>Pair<ConstraintCondition<T>, Validator<T>></code>.
-	 */
 	public void forEachConditionalValidator(
 			Consumer<Pair<ConstraintCondition<T>, Validatable<T>>> action) {
 		this.conditionalValidators.forEach(action);
