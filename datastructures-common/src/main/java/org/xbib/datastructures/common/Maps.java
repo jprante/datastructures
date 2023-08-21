@@ -6,9 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- */
 public class Maps {
 
     private Maps() {
@@ -53,6 +50,19 @@ public class Maps {
             return null;
         }
         return (String) object;
+    }
+
+    public static Long getLong(Map<?, ?> map, String key, Long defaultValue) {
+        if (map.containsKey(key)) {
+            try {
+                Object o = get(map, key);
+                return o == null ? null : o instanceof Long ? (Long) o : Long.parseLong(o.toString());
+            } catch (NumberFormatException e) {
+                return defaultValue;
+            }
+        } else {
+            return defaultValue;
+        }
     }
 
     public static Integer getInteger(Map<?, ?> map, String key, Integer defaultValue) {
