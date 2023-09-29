@@ -1,0 +1,9 @@
+This work is taken from
+
+https://github.com/lantunes/interpolatd
+
+as of Sep 29, 2023
+
+by Luis Antunes
+
+Apache License 2.0
