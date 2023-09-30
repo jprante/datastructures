@@ -4,6 +4,9 @@ public class Json {
 
     public static final String DEFAULT_INDENT = "  ";
 
+    public Json() {
+    }
+
     public static Node parse(String raw) throws ParseException {
         return create(new Parser(raw), 0);
     }
@@ -20,23 +23,13 @@ public class Json {
 
     public static Node create(Parser parser, int element) {
         Type type = parser.getType(element);
-        switch (type) {
-            case NULL:
-                return new NullLiteral();
-            case TRUE:
-            case FALSE:
-                return new BoolLiteral(Boolean.parseBoolean(parser.getJson(element)));
-            case NUMBER:
-                return new NumberLiteral(parser.getJson(element));
-            case STRING_ESCAPED:
-            case STRING:
-                return new ParsedString(parser, element);
-            case ARRAY:
-                return new ParsedList(parser, element);
-            case OBJECT:
-                return new ParsedMap(parser, element);
-            default:
-                throw new IllegalStateException();
-        }
+        return switch (type) {
+            case NULL -> new NullLiteral();
+            case TRUE, FALSE -> new BoolLiteral(Boolean.parseBoolean(parser.getJson(element)));
+            case NUMBER -> new NumberLiteral(parser.getJson(element));
+            case STRING_ESCAPED, STRING -> new ParsedString(parser, element);
+            case ARRAY -> new ParsedList(parser, element);
+            case OBJECT -> new ParsedMap(parser, element);
+        };
     }
 }

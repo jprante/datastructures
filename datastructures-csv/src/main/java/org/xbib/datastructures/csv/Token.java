@@ -8,6 +8,9 @@ public final class Token {
 
     boolean isReady;
 
+    public Token() {
+    }
+
     public void reset() {
         content.setLength(0);
         type = TokenType.INVALID;

@@ -76,7 +76,6 @@ public class RangeImpl implements Range {
      * Constructor
      *
      * @param w  the workbook
-     * @param es the external sheet
      * @param s1 the sheet of the top left cell of the range
      * @param c1 the column number of the top left cell of the range
      * @param r1 the row number of the top left cell of the range

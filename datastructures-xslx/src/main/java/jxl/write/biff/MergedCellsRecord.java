@@ -39,7 +39,7 @@ public class MergedCellsRecord extends WritableRecordData {
     /**
      * Constructs a merged cell record
      *
-     * @param ws the sheet containing the merged cells
+     * @param mc the sheet containing the merged cells
      */
     protected MergedCellsRecord(ArrayList mc) {
         super(Type.MERGEDCELLS);

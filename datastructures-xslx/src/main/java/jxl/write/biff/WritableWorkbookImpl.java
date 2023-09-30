@@ -1004,7 +1004,7 @@ public class WritableWorkbookImpl extends WritableWorkbook
     /**
      * Gets the index of the external sheet for the name
      *
-     * @param sheetName
+     * @param index the index
      * @return the sheet index of the external sheet index
      */
     public int getExternalSheetIndex(int index) {
@@ -1022,7 +1022,7 @@ public class WritableWorkbookImpl extends WritableWorkbook
     /**
      * Gets the index of the external sheet for the name
      *
-     * @param sheetName
+     * @param index the index
      * @return the sheet index of the external sheet index
      */
     public int getLastExternalSheetIndex(int index) {
@@ -1207,7 +1207,7 @@ public class WritableWorkbookImpl extends WritableWorkbook
      * Adds a cell to workbook wide range of cells which need adjustment
      * following a row/column insert or remove
      *
-     * @param f the cell to add to the list
+     * @param cv the cell to add to the list
      */
     void addRCIRCell(CellValue cv) {
         rcirCells.add(cv);
@@ -1339,7 +1339,7 @@ public class WritableWorkbookImpl extends WritableWorkbook
      * range of cells, then the cell on the top left is returned.  If
      * the name cannot be found, null is returned
      *
-     * @param the name of the cell/range to search for
+     * @param name the name of the cell/range to search for
      * @return the cell in the top left of the range if found, NULL
      * otherwise
      */
@@ -1372,7 +1372,7 @@ public class WritableWorkbookImpl extends WritableWorkbook
      * If the named range contains a single cell, the top left and
      * bottom right cell will be the same cell
      *
-     * @param the name of the cell/range to search for
+     * @param name the name of the cell/range to search for
      * @return the range of cells
      */
     public Range[] findByName(String name) {

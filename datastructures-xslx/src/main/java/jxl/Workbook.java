@@ -292,7 +292,7 @@ public abstract class Workbook {
      *
      * @param index the zero based index of the reQuired sheet
      * @return The sheet specified by the index
-     * @throws IndexOutOfBoundException when index refers to a non-existent
+     * @throws IndexOutOfBoundsException when index refers to a non-existent
      *                                  sheet
      */
     public abstract Sheet getSheet(int index)

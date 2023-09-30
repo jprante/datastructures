@@ -38,7 +38,6 @@ public abstract class BlankRecord extends CellValue {
      * Consructor used when creating a label from the user API
      *
      * @param c    the column
-     * @param cont the contents
      * @param r    the row
      */
     protected BlankRecord(int c, int r) {
@@ -72,7 +71,7 @@ public abstract class BlankRecord extends CellValue {
      *
      * @param c the column
      * @param r the row
-     * @param b the record to  copy
+     * @param br the record to  copy
      */
     protected BlankRecord(int c, int r, BlankRecord br) {
         super(Type.BLANK, c, r, br);

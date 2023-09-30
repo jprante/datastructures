@@ -116,7 +116,7 @@ public class DataValiditySettingsRecord extends WritableRecordData {
     /**
      * Constructor called when the API creates a writable data validation
      *
-     * @param dvsr the record copied from a writable sheet
+     * @param dvp the record copied from a writable sheet
      */
     public DataValiditySettingsRecord(DVParser dvp) {
         super(Type.DV);

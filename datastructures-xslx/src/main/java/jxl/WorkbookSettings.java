@@ -655,9 +655,6 @@ public final class WorkbookSettings {
      * memory.   Setting
      * this flag involves an assessment of the trade-offs between memory usage
      * and performance
-     *
-     * @return TRUE if a temporary is file is used during writing,
-     * FALSE otherwise
      */
     public void setUseTemporaryFileDuringWrite(boolean temp) {
         useTemporaryFileDuringWrite = temp;

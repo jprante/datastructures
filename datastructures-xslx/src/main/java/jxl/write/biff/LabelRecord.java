@@ -91,7 +91,7 @@ public abstract class LabelRecord extends CellValue {
      *
      * @param c  the column
      * @param r  the row
-     * @param nr the record to copy
+     * @param lr the record to copy
      */
     protected LabelRecord(int c, int r, LabelRecord lr) {
         super(Type.LABELSST, c, r, lr);

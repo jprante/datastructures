@@ -65,7 +65,7 @@ public /*final*/ class Alignment {
      * Private constructor
      *
      * @param val
-     * @param string
+     * @param s
      */
     protected Alignment(int val, String s) {
         value = val;

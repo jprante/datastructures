@@ -285,7 +285,6 @@ public class WritableFont extends WritableFontRecord {
      * Sets Accessor for the strike-out flag
      *
      * @param struckout TRUE if this is a struckout font
-     * @return the strike-out flag
      * @throws WriteException, if this font is already in use elsewhere
      */
     public void setStruckout(boolean struckout) throws WriteException {

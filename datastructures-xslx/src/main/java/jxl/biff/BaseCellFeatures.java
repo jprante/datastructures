@@ -104,7 +104,7 @@ public class BaseCellFeatures {
     /**
      * Copy constructor
      *
-     * @param the cell to copy
+     * @param cf the cell to copy
      */
     public BaseCellFeatures(BaseCellFeatures cf) {
         // The comment stuff
@@ -308,8 +308,6 @@ public class BaseCellFeatures {
 
     /**
      * The list of items to validate for this cell in the form of a cell range.
-     *
-     * @param c the list of valid values
      */
     public void setDataValidationRange(int col1, int r1, int col2, int r2) {
         if (dataValidation && getDVParser().extendedCellsValidation()) {
@@ -430,7 +428,7 @@ public class BaseCellFeatures {
     /**
      * Use the same data validation logic as the specified cell features
      *
-     * @param cf the data validation to reuse
+     * @param source the data validation to reuse
      */
     public void shareDataValidation(BaseCellFeatures source) {
         if (dataValidation) {

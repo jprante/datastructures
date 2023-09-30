@@ -36,7 +36,7 @@ public class WritableFontRecord extends FontRecord {
      * @param us   the underline style
      * @param fn   the name
      * @param it   italicised indicator
-     * @param c    the colour
+     * @param ci    the colour
      * @param ss   the script style
      */
     protected WritableFontRecord(String fn, int ps, int bold, boolean it,
@@ -47,7 +47,7 @@ public class WritableFontRecord extends FontRecord {
     /**
      * Publicly available copy constructor
      *
-     * @param the font to copy
+     * @param f the font to copy
      */
     protected WritableFontRecord(Font f) {
         super(f);
@@ -145,7 +145,7 @@ public class WritableFontRecord extends FontRecord {
     /**
      * Sets the struck out flag
      *
-     * @param so TRUE if the font is struck out, false otherwise
+     * @param os TRUE if the font is struck out, false otherwise
      * @throws WriteException, if this font is already in use elsewhere
      */
     protected void setStruckout(boolean os) throws WriteException {

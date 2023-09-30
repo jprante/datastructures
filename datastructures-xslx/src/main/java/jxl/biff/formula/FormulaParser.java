@@ -49,7 +49,6 @@ public class FormulaParser {
      * @param es     a handle to the external sheet
      * @param nt     a handle to the name table
      * @param ws     the workbook settings
-     * @param pc     the parse context
      * @throws FormulaException
      */
     public FormulaParser(byte[] tokens,

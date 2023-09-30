@@ -122,7 +122,7 @@ public class CellXFRecord extends XFRecord {
     /**
      * Sets the shrink to fit flag
      *
-     * @param b the shrink to fit flag
+     * @param s the shrink to fit flag
      */
     public void setShrinkToFit(boolean s) throws WriteException {
         if (isInitialized()) {

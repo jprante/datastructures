@@ -854,7 +854,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      */
     private TrieEntry<K, V> nextEntry(TrieEntry<K, V> node) {
         if (node == null) {
-            return firstEntry();
+            return trieFirstEntry();
         } else {
             return nextEntryImpl(node.predecessor, node, null);
         }
@@ -869,7 +869,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      */
     private TrieEntry<K, V> nextEntryInSubtree(TrieEntry<K, V> node, TrieEntry<K, V> parentOfSubtree) {
         if (node == null) {
-            return firstEntry();
+            return trieFirstEntry();
         } else {
             return nextEntryImpl(node.predecessor, node, parentOfSubtree);
         }
@@ -1120,7 +1120,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      * This is implemented by going always to the left until
      * we encounter a valid uplink. That uplink is the first key.
      */
-    private TrieEntry<K, V> firstEntry() {
+    private TrieEntry<K, V> trieFirstEntry() {
         // if Trie is empty, no first node.
         if (isEmpty())
             return null;
@@ -1151,7 +1151,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
      * This is implemented by going always to the right until
      * we encounter a valid uplink. That uplink is the last key.
      */
-    private TrieEntry<K, V> lastEntry() {
+    private TrieEntry<K, V> trieLastEntry() {
         return followRight(root.left);
     }
 
@@ -1172,7 +1172,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
 
     @Override
     public K firstKey() {
-        return firstEntry().getKey();
+        return trieFirstEntry().getKey();
     }
 
     @Override
@@ -1182,7 +1182,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
 
     @Override
     public K lastKey() {
-        TrieEntry<K, V> entry = lastEntry();
+        TrieEntry<K, V> entry = trieLastEntry();
         if (entry != null)
             return entry.getKey();
         else
@@ -1219,7 +1219,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
                 }
             } else {
                 // Root is empty & we want something after empty, return first.
-                return firstEntry();
+                return trieFirstEntry();
             }
         }
 
@@ -1238,9 +1238,9 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
             return ceil;
         } else if (isNullBitKey(bitIndex)) {
             if (!root.isEmpty())
-                return firstEntry();
+                return trieFirstEntry();
             else if (size() > 1)
-                return nextEntry(firstEntry());
+                return nextEntry(trieFirstEntry());
             else
                 return null;
         } else if (isEqualBitKey(bitIndex)) {
@@ -1280,7 +1280,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
             if (!root.isEmpty())
                 return root;
             else
-                return firstEntry();
+                return trieFirstEntry();
         }
 
         TrieEntry<K, V> found = getNearestEntryForKey(key, keyLength);
@@ -1300,7 +1300,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
             if (!root.isEmpty())
                 return root;
             else
-                return firstEntry();
+                return trieFirstEntry();
         } else if (isEqualBitKey(bitIndex)) {
             return found;
         }
@@ -1623,7 +1623,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
     /**
      * An iterator for the entries.
      */
-    abstract class NodeIterator<E> implements Iterator<E> {
+    protected abstract class NodeIterator<E> implements Iterator<E> {
         protected int expectedModCount = modCount;   // For fast-fail
         protected TrieEntry<K, V> next; // the next node to return
         protected TrieEntry<K, V> current; // the current entry we're on
@@ -1690,7 +1690,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
         }
     }
 
-    class SingletonIterator implements Iterator<Map.Entry<K, V>> {
+    private class SingletonIterator implements Iterator<Map.Entry<K, V>> {
 
         private final PatriciaTrie<K, V> patriciaTrie;
 
@@ -1923,7 +1923,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
             fixup();
             TrieEntry<K, V> e;
             if (fromKey == null) {
-                e = firstEntry();
+                e = trieFirstEntry();
             } else {
                 e = higherEntry(fromKey);
             }
@@ -1939,7 +1939,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
             fixup();
             TrieEntry<K, V> e;
             if (toKey == null) {
-                e = lastEntry();
+                e = trieLastEntry();
             } else {
                 e = lowerEntry(toKey);
             }
@@ -2122,7 +2122,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
         public K firstKey() {
             TrieEntry<K, V> e;
             if (fromKey == null) {
-                e = firstEntry();
+                e = trieFirstEntry();
             } else {
                 if (fromInclusive)
                     e = ceilingEntry(fromKey);
@@ -2139,7 +2139,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
         public K lastKey() {
             TrieEntry<K, V> e;
             if (toKey == null) {
-                e = lastEntry();
+                e = trieLastEntry();
             } else {
                 if (toInclusive)
                     e = floorEntry(toKey);
@@ -2267,7 +2267,7 @@ public class PatriciaTrie<K, V> extends AbstractMap<K, V> implements Trie<K, V> 
             @Override
             public Iterator<Map.Entry<K, V>> iterator() {
                 return new SubMapEntryIterator(
-                        (fromKey == null ? firstEntry() : ceilingEntry(fromKey)),
+                        (fromKey == null ? trieFirstEntry() : ceilingEntry(fromKey)),
                         (toKey == null ? null : ceilingEntry(toKey)));
             }
         }

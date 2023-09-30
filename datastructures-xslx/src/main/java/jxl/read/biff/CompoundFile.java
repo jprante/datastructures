@@ -540,7 +540,7 @@ public final class CompoundFile extends BaseCompoundFile {
      * Gets the property set.  Invoked when copying worksheets with macros.
      * Simply calls the private counterpart
      *
-     * @param ps the property set name
+     * @param index the index
      * @return the property set with the given name
      */
     public PropertyStorage getPropertySet(int index) {

@@ -3,7 +3,7 @@ package org.xbib.datastructures.json.flat;
 import java.util.ArrayList;
 import java.util.List;
 
-class Parser {
+public class Parser {
 
     private static final int TYPE = 0;
 
@@ -21,7 +21,7 @@ class Parser {
 
     private int element;
 
-    Parser(String input) throws ParseException {
+    public Parser(String input) throws ParseException {
         if (input == null) {
             throw new ParseException("cannot parse null");
         }

@@ -133,11 +133,6 @@ public abstract class HeaderFooter {
         centre = createContents();
     }
 
-    /**
-     * Copy constructor
-     *
-     * @param c the item to copy
-     */
     protected HeaderFooter(HeaderFooter hf) {
         left = createContents(hf.left);
         right = createContents(hf.right);

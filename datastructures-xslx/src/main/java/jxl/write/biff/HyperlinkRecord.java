@@ -109,7 +109,7 @@ public class HyperlinkRecord extends WritableRecordData {
     /**
      * Constructs this object from the readable spreadsheet
      *
-     * @param hl the hyperlink from the read spreadsheet
+     * @param h the hyperlink from the read spreadsheet
      */
     protected HyperlinkRecord(Hyperlink h, WritableSheet s) {
         super(Type.HLINK);
@@ -191,7 +191,7 @@ public class HyperlinkRecord extends WritableRecordData {
      * @param lastcol     the last column which activates this hyperlink
      * @param lastrow     the last row which activates this hyperlink
      * @param desc        the contents of the cell which describe this hyperlink
-     * @param sheet       the sheet containing the cells to be linked to
+     * @param s       the sheet containing the cells to be linked to
      * @param destcol     the column number of the first destination linked cell
      * @param destrow     the row number of the first destination linked cell
      * @param lastdestcol the column number of the last destination linked cell

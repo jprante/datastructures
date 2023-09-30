@@ -1174,8 +1174,8 @@ public final class SheetSettings {
     /**
      * Sets the print column titles for this sheet
      *
-     * @param firstRow the first row of the print titles
-     * @param lastRow  the last row of the print titles
+     * @param firstCol the first row of the print titles
+     * @param lastCol  the last row of the print titles
      */
     public void setPrintTitlesCol(int firstCol,
                                   int lastCol) {

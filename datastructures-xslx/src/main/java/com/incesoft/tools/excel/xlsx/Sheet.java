@@ -57,10 +57,7 @@ public class Sheet {
 	 * with {@link #setAddToMemory(boolean)}=true,you should be careful with
 	 * the 'modifyXXX' methods,because it won't put any rows into memory -- sth
 	 * like 'readonly' mode.Besides,the stream-modify api will come in soon.
-	 * 
-	 * @return null if there is no more rows
 	 */
-
 	public static class IteratorStatus {
 		int rowIndex = -1;
 
