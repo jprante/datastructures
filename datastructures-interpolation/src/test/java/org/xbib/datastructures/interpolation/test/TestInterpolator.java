@@ -713,25 +713,33 @@ public class TestInterpolator {
         
         public String getForPrefixed(String captured) {
             Value val = map.get(captured);
-            if (hasForAny(val)) return val.getForAny();
+            if (hasForAny(val)) {
+                return val.getForAny();
+            }
             return val != null ? val.getForPrefixed() : null;
         }
         
         public String getForBraceEnclosed(String captured) {
             Value val = map.get(captured);
-            if (hasForAny(val)) return val.getForAny();
+            if (hasForAny(val)) {
+                return val.getForAny();
+            }
             return val != null ? val.getForBraceEnclosed() : null;
         }
         
         public String getForBracketEnclosed(String captured) {
             Value val = map.get(captured);
-            if (hasForAny(val)) return val.getForAny();
+            if (hasForAny(val)) {
+                return val.getForAny();
+            }
             return val != null ? val.getForBracketEnclosed() : null;
         }
         
         public String getForPrefixedBracketEnclosed(String captured) {
             Value val = map.get(captured);
-            if (hasForAny(val)) return val.getForAny();
+            if (hasForAny(val)) {
+                return val.getForAny();
+            }
             return val != null ? val.getForPrefixedBracketEnclosed() : null;
         }
         
