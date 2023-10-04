@@ -1,0 +1,5 @@
+dependencies {
+    api project(':settings-datastructures')
+    testImplementation project(':settings-datastructures-json')
+    testImplementation project(':settings-datastructures-yaml')
+}

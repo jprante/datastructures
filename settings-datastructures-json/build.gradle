@@ -1,0 +1,4 @@
+dependencies {
+    api project(':settings-datastructures')
+    api project(':datastructures-json-tiny')
+}

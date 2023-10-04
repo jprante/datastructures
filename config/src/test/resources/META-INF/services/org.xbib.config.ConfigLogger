@@ -1,0 +1,2 @@
+org.xbib.config.NullConfigLogger
+org.xbib.config.SystemConfigLogger
