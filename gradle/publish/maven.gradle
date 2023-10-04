@@ -6,6 +6,7 @@ publishing {
             pom {
                 artifactId = project.name
                 name = project.name
+                version = project.version
                 description = rootProject.ext.description
                 url = rootProject.ext.url
                 inceptionYear = rootProject.ext.inceptionYear
