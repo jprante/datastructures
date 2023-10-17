@@ -4,6 +4,7 @@ dependencies {
     testImplementation libs.junit.jupiter.params
     testImplementation libs.hamcrest
     testRuntimeOnly libs.junit.jupiter.engine
+    testRuntimeOnly libs.junit.jupiter.platform.launcher
 }
 
 test {
