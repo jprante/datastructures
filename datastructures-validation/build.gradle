@@ -1,4 +1,4 @@
 dependencies {
-    testImplementation libs.assertj
-    testImplementation libs.compile.testing
+    testImplementation testLibs.assertj
+    testImplementation testLibs.compile.testing
 }

@@ -1,9 +1,9 @@
 dependencies {
-    testImplementation libs.junit4
-    testImplementation libs.google.truth
-    testImplementation libs.burst.junit4
-    testImplementation libs.okio
-    testRuntimeOnly libs.junit.vintage.engine
+    testImplementation testLibs.junit4
+    testImplementation testLibs.google.truth
+    testImplementation testLibs.burst.junit4
+    testImplementation testLibs.okio
+    testRuntimeOnly testLibs.junit.vintage.engine
 }
 
 test {

@@ -3,10 +3,10 @@ apply from: rootProject.file('gradle/test/jmh.gradle')
 
 dependencies {
     implementation libs.javassist
-    testImplementation libs.junit4
-    testImplementation libs.jackson
-    testImplementation libs.gson
-    jmhImplementation libs.gson
-    jmhImplementation libs.jackson.annotations
-    jmhImplementation libs.jackson.databind
+    testImplementation testLibs.junit4
+    testImplementation testLibs.jackson
+    testImplementation testLibs.gson
+    jmhImplementation testLibs.gson
+    jmhImplementation testLibs.jackson.annotations
+    jmhImplementation testLibs.jackson.databind
 }

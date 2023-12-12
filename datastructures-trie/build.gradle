@@ -1,5 +1,5 @@
 dependencies {
-    testImplementation(libs.mockito.core) {
+    testImplementation(testLibs.mockito.core) {
         exclude group: 'org.hamcrest'
     }
 }
